@@ -2,6 +2,7 @@ const Start = require("./scenes/start");
 const Background = require("./actors/background");
 const Name = require("./actors/name");
 const PlayBtn = require("./actors/play-btn");
+const Bird = require("./actors/bird");
 
 class Game {
   constructor(canvas) {
@@ -16,31 +17,56 @@ class Game {
     this.loadResources(this.start.bind(this));
   }
 
-  // 开始游戏，游戏资源全部加载完毕后
-  start() {
-    // 初始化角色
+  // 创建角色, 并非游戏全部角色
+  // 这里创建的角色一般为多场景共用的单一角色
+  // 场景特有的角色一般在场景内创建
+  createActors() {
     // 游戏背景
     this.actors.bg = new Background(this);
     // 开始页面游戏名称
     this.actors.name = new Name(this);
     // 开始按钮
     this.actors.playBtn = new PlayBtn(this);
+    // 小鸟
+    this.actors.bird = new Bird(this);
+  }
 
-    // 初始化场景
+  // 创建场景
+  createScenes() {
+    // 游戏开始场景
     this.scenes.start = new Start(this);
+  }
+
+  // 开始事件监听
+  listenEvent() {
+    this.canvas.onclick = event => {
+      this.scene.click(event);
+    };
+  }
+
+  // 开始游戏，游戏资源全部加载完毕后
+  start() {
+    // 创建公共角色
+    this.createActors();
+
+    // 创建场景
+    this.createScenes();
+
     // 进入start场景
     this.enter("start");
+
+    // 事件监听
+    this.listenEvent();
 
     // 游戏主循环启动
     this.timer = setInterval(() => {
       this.fno += 1;
-      const scene = this.scenes[this.scene];
       // 擦除
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       // 场景更新
-      scene.update();
+      this.scene.update();
       // 场景渲染
-      scene.render();
+      this.scene.render();
 
       // 输出调试信息
       this.debugg();
@@ -51,7 +77,7 @@ class Game {
     this.ctx.font = "20px serif";
     this.ctx.fillStyle = "black";
     this.ctx.fillText(`Fno: ${this.fno}`, 5, 20);
-    this.ctx.fillText(`Scene: ${this.scene}`, 5, 40);
+    this.ctx.fillText(`Scene: ${this.scene.name}`, 5, 40);
   }
 
   // 进入某个场景
@@ -59,7 +85,7 @@ class Game {
     if (!name) throw Error("场景名不能为空");
     const scene = this.scenes[name];
     if (!scene) throw Error(`不存在此场景 ${name}`);
-    this.scene = name;
+    this.scene = scene;
     scene.enter();
   }
 

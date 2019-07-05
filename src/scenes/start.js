@@ -1,21 +1,33 @@
 function Start(game) {
-  const actors = ["bg", "name", "playBtn"];
+  const { actors } = game;
+
+  // 场景名称
+  const name = "start";
+
+  // 当前场景需要的角色名称
+  const _actors = ["bg", "name", "playBtn", "bird"];
   // update 更新个成员
   const update = () => {
-    for (const actor of actors) game.actors[actor].update();
+    for (const actor of _actors) actors[actor].update();
   };
 
   // 渲染各成员
   const render = () => {
-    for (const actor of actors) game.actors[actor].render();
+    for (const actor of _actors) actors[actor].render();
   };
 
   // 进入场景
   const enter = () => {
-    game.actors.bg.setStop(true);
+    actors.bg.setStop(true);
+    actors.bird.setStop(true);
   };
 
-  return { update, render, enter };
+  // 点击事件
+  const click = () => {
+    actors.bird.up();
+  };
+
+  return { name, update, render, enter, click };
 }
 
 module.exports = Start;
