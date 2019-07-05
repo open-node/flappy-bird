@@ -1,5 +1,7 @@
 const Start = require("./scenes/start");
 const Background = require("./actors/background");
+const Name = require("./actors/name");
+const PlayBtn = require("./actors/play-btn");
 
 class Game {
   constructor(canvas) {
@@ -17,7 +19,12 @@ class Game {
   // 开始游戏，游戏资源全部加载完毕后
   start() {
     // 初始化角色
+    // 游戏背景
     this.actors.bg = new Background(this);
+    // 开始页面游戏名称
+    this.actors.name = new Name(this);
+    // 开始按钮
+    this.actors.playBtn = new PlayBtn(this);
 
     // 初始化场景
     this.scenes.start = new Start(this);
