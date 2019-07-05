@@ -1,4 +1,5 @@
 const Start = require("./scenes/start");
+const Background = require("./actors/background");
 
 class Game {
   constructor(canvas) {
@@ -9,11 +10,15 @@ class Game {
     this.scenes = {};
     this.timer = null;
     this.fno = 0; // 程序主帧
+    this.actors = {}; // 角色管理器
     this.loadResources(this.start.bind(this));
   }
 
   // 开始游戏，游戏资源全部加载完毕后
   start() {
+    // 初始化角色
+    this.actors.bg = new Background(this);
+
     // 初始化场景
     this.scenes.start = new Start(this);
     // 进入start场景
