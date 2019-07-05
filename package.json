@@ -1,0 +1,20 @@
+{
+  "name": "flappy-bird",
+  "version": "1.0.0",
+  "description": "Flappy bird game, base on canvas",
+  "main": "index.js",
+  "scripts": {
+    "build": "watchify index.js -o ./dist/main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com/open-node/flappy-bird.git"
+  },
+  "keywords": ["canvas", "game", "2d", "flappy", "bird"],
+  "author": "Redstone Zhao",
+  "license": "MIT",
+  "devDependencies": {
+    "browserify": "^16.3.0",
+    "watchify": "^3.11.1"
+  }
+}
