@@ -19,8 +19,8 @@ class Actor {
 
   /** Create a actor instance */
   constructor(game) {
-    this.reset();
     this.game = game;
+    this.reset();
   }
 
   /**
@@ -57,9 +57,16 @@ class Actor {
    * @return {boolean}
    */
   isItOn(cX, cY) {
-    return (
-      cX > this.x && cX < this.x + this.w && cY > this.y && cY < this.y + this.h
-    );
+    return cX > this.x && cX < this.x + this.w && cY > this.y && cY < this.y + this.h;
+  }
+
+  /**
+   * 判断是否已经出去在画布之外
+   *
+   * @return {boolean}
+   */
+  get isOut() {
+    return this.x < -this.w || this.game.w < this.x || this.game.h < this.y || this.y < 0;
   }
 }
 

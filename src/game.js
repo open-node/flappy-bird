@@ -9,6 +9,8 @@ const Play = require("./scenes/play");
 class Game {
   constructor(canvas) {
     this.canvas = canvas;
+    this.w = canvas.width;
+    this.h = canvas.height;
     this.ctx = this.canvas.getContext("2d");
     this.img = null; // 资源图片，因为合成在了一起，所以只有一个图片资源需要加载
     this.scene = null; // 当前场景，初始为 start 场景
@@ -33,6 +35,8 @@ class Game {
     this.actors.bird = new Bird(this);
     // 大地
     this.actors.land = new Land(this);
+    // 管道角色集合
+    this.actors.pipes = [];
   }
 
   // 创建场景
@@ -70,7 +74,7 @@ class Game {
     this.timer = setInterval(() => {
       this.fno += 1;
       // 擦除
-      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      this.ctx.clearRect(0, 0, this.w, this.h);
       // 场景更新
       this.scene.update();
       // 场景渲染

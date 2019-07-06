@@ -21,7 +21,13 @@ class Scene {
    */
   update() {
     for (const key of this.actors) {
-      this.game.actors[key].update();
+      const actor = this.game.actors[key];
+      if (!actor) continue;
+      if (Array.isArray(actor)) {
+        for (const x of actor) x.update(actor);
+      } else {
+        actor.update();
+      }
     }
   }
 
@@ -32,7 +38,13 @@ class Scene {
    */
   render() {
     for (const key of this.actors) {
-      this.game.actors[key].render();
+      const actor = this.game.actors[key];
+      if (!actor) continue;
+      if (Array.isArray(actor)) {
+        for (const x of actor) x.render();
+      } else {
+        actor.render();
+      }
     }
   }
 

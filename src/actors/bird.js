@@ -2,6 +2,7 @@ const Actor = require("./actor");
 
 class Bird extends Actor {
   reset() {
+    this.x = 164;
     this.y = 300;
     this.wing = 0;
     this.v = 0; // 局部帧编号
@@ -14,9 +15,9 @@ class Bird extends Actor {
     const { img } = game;
     const birds = [
       [
-        [img, 175, 975, 32, 32, 164, -16, 32, 32],
-        [img, 230, 650, 32, 32, 164, -16, 32, 32],
-        [img, 230, 702, 32, 32, 164, -16, 32, 32]
+        [img, 175, 975, 32, 32, this.x, -16, 32, 32],
+        [img, 230, 650, 32, 32, this.x, -16, 32, 32],
+        [img, 230, 702, 32, 32, this.x, -16, 32, 32]
       ]
     ];
     // 三只小鸟，随机选择一个
@@ -44,6 +45,7 @@ class Bird extends Actor {
 
   render() {
     const args = this.bird[this.wing];
+    args[5] = this.x;
     args[6] = this.y;
     this.game.ctx.drawImage(...args);
   }
