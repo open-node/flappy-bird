@@ -5,6 +5,7 @@ const PlayBtn = require("./actors/play-btn");
 const Bird = require("./actors/bird");
 const Start = require("./scenes/start");
 const Play = require("./scenes/play");
+const End = require("./scenes/end");
 
 class Game {
   constructor(canvas) {
@@ -45,6 +46,8 @@ class Game {
     this.scenes.start = new Start(this, "start");
     // play 场景
     this.scenes.play = new Play(this, "play");
+    // end 场景
+    this.scenes.end = new End(this, "end");
   }
 
   // 开始事件监听

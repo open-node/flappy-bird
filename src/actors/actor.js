@@ -52,6 +52,20 @@ class Actor {
   }
 
   /**
+   * 碰撞判断
+   * @param {Actor} target
+   *
+   * @return {boolean}
+   */
+  aabb(x, y, w, h) {
+    // this.x < x + w 目标的右侧在当前左侧之右
+    // x < this.x + this.w 目标的左侧在当前右侧之左
+    // y < this.y + this.h 目标顶部在当前底部之上
+    // this.y < y + h 目标底部在当前顶部之下
+    return this.x < x + w && x < this.x + this.w && y < this.y + this.h && this.y < y + h;
+  }
+
+  /**
    * 给定一组 x, y判断是否在角色身上
    *
    * @return {boolean}
