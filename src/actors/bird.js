@@ -1,57 +1,56 @@
-function Bird(game) {
-  const { ctx, img } = game;
-  // x 坐标
-  let y = 300;
-  let wing = 0;
-  let fno = 0; // 局部帧编号
-  let stop = 0; // 是否停止动画
-  const birds = [
-    [
-      [img, 175, 975, 32, 32, 164, -16, 32, 32],
-      [img, 230, 650, 32, 32, 164, -16, 32, 32],
-      [img, 230, 702, 32, 32, 164, -16, 32, 32]
-    ]
-  ];
+const Actor = require("./actor");
 
-  // 三只小鸟，随机选择一个
-  const n = ((Math.random() * 7919) | 0) % birds.length;
-  const bird = birds[n];
+class Bird extends Actor {
+  reset() {
+    this.y = 300;
+    this.wing = 0;
+    this.v = 0; // 局部帧编号
+    this.stop = false; // 是否停止动画
+  }
 
-  const update = () => {
-    if (!stop) {
-      y += fno * 0.23;
-      fno += 1;
+  constructor(game) {
+    super(game);
+
+    const { img } = game;
+    const birds = [
+      [
+        [img, 175, 975, 32, 32, 164, -16, 32, 32],
+        [img, 230, 650, 32, 32, 164, -16, 32, 32],
+        [img, 230, 702, 32, 32, 164, -16, 32, 32]
+      ]
+    ];
+    // 三只小鸟，随机选择一个
+    const n = ((Math.random() * 7919) | 0) % birds.length;
+    this.bird = birds[n];
+  }
+
+  update() {
+    if (!this.stop) {
+      this.y += this.v * 0.23;
+      this.v += 1;
     }
-    if (wing > 1) {
-      wing = 0;
-    } else if (game.fno % 7 === 0) {
-      wing += 1;
+    if (this.wing > 1) {
+      this.wing = 0;
+    } else if (this.game.fno % 7 === 0) {
+      this.wing += 1;
     }
-  };
+  }
 
   // 向上升级
-  const up = () => {
-    if (stop) return;
-    fno = -20;
-  };
+  up() {
+    if (this.stop) return;
+    this.v = -20;
+  }
 
-  const render = () => {
-    const args = bird[wing];
-    args[6] = y;
-    ctx.drawImage(...args);
-  };
+  render() {
+    const args = this.bird[this.wing];
+    args[6] = this.y;
+    this.game.ctx.drawImage(...args);
+  }
 
-  const setStop = value => {
-    stop = !!value;
-  };
-
-  const reset = () => {
-    wing = 0;
-    fno = 0;
-    y = 300;
-  };
-
-  return { update, render, setStop, reset, up };
+  setStop(value) {
+    this.stop = !!value;
+  }
 }
 
 module.exports = Bird;

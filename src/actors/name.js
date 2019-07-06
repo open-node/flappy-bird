@@ -1,28 +1,29 @@
-function Name(game) {
-  const { ctx, img } = game;
-  // x 坐标
-  let y = 0;
-  let fno = 0;
+const Actor = require("./actor");
+
+class Name extends Actor {
+  reset() {
+    this.v = 0;
+    this.oX = 700;
+    this.oY = 180;
+    this.w = 180;
+    this.h = 55;
+    this.x = 90;
+    this.y = 0;
+  }
 
   // 更新y坐标，游戏名称从顶部坠落, 开始按钮从底部升起
   // 利用局部帧来控制，这样可以保证二者同时开始，同时停止
   // 走若干帧停止
-  const update = () => {
-    if (fno > 15) return;
-    fno += 1;
-    y += fno;
-  };
+  update() {
+    if (this.v > 15) return;
+    this.v += 1;
+    this.y += this.v;
+  }
 
-  const render = () => {
-    ctx.drawImage(img, 700, 180, 180, 55, 90, y, 180, 55);
-  };
-
-  const reset = () => {
-    y = 0;
-    fno = 0;
-  };
-
-  return { update, render, reset };
+  render() {
+    const { ctx, img } = this.game;
+    ctx.drawImage(img, this.oX, this.oY, this.w, this.h, this.x, this.y, this.w, this.h);
+  }
 }
 
 module.exports = Name;

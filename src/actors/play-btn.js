@@ -1,28 +1,30 @@
-function PlayBtn(game) {
-  const { ctx, img } = game;
-  // x 坐标
-  let y = 640;
-  let fno = 0;
+const Actor = require("./actor");
 
-  // 更新y坐标，游戏名称从顶部坠落, 开始按钮从底部升起
-  // 利用局部帧来控制，这样可以保证二者同时开始，同时停止
-  // 走若干帧停止
-  const update = () => {
-    if (fno > 15) return;
-    fno += 1;
-    y -= fno * 1.5;
-  };
+class PlayBtn extends Actor {
+  reset() {
+    this.w = 112; // 图形高度
+    this.h = 62; // 图形宽度
+    this.oX = 700; // 图形所在大图的x位置偏移量
+    this.oY = 235; // 图形所在大图的y作为偏移量
+    this.x = 124; // 图形在画布中的x位置偏移量
+    this.y = 640; // 图形在画布中的y位置偏移量
+    this.v = 0; // 按钮纵向速度，有方向，大于0朝下，小于0朝上
+  }
 
-  const render = () => {
-    ctx.drawImage(img, 700, 235, 112, 62, 124, y, 112, 62);
-  };
+  update() {
+    if (this.v > 15) return;
+    this.v += 1;
+    this.y -= this.v * 1.5;
+  }
 
-  const reset = () => {
-    y = 0;
-    fno = 0;
-  };
+  render() {
+    const { ctx, img } = this.game;
+    ctx.drawImage(img, this.oX, this.oY, this.w, this.h, this.x, this.y, this.w, this.h);
+  }
 
-  return { update, render, reset };
+  click() {
+    this.game.enter("play");
+  }
 }
 
 module.exports = PlayBtn;

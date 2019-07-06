@@ -34,13 +34,15 @@ class Game {
   // 创建场景
   createScenes() {
     // 游戏开始场景
-    this.scenes.start = new Start(this);
+    this.scenes.start = new Start(this, "start");
   }
 
   // 开始事件监听
   listenEvent() {
     this.canvas.onclick = event => {
-      this.scene.click(event);
+      const x = event.clientX;
+      const y = event.clientY;
+      this.scene.click(x, y);
     };
   }
 
