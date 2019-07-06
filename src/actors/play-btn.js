@@ -22,8 +22,8 @@ class PlayBtn extends Actor {
     ctx.drawImage(img, this.oX, this.oY, this.w, this.h, this.x, this.y, this.w, this.h);
   }
 
-  click() {
-    this.game.enter("play");
+  click(x, y) {
+    if (this.isItOn(x, y)) this.game.enter("play");
   }
 }
 

@@ -22,7 +22,7 @@ class Background extends Actor {
   update() {
     if (this.stop) return;
     if (this.x < -this.w) this.x = 0;
-    this.x -= 2;
+    this.x -= 1;
   }
 
   render() {

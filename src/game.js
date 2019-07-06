@@ -1,8 +1,10 @@
-const Start = require("./scenes/start");
 const Background = require("./actors/background");
+const Land = require("./actors/land");
 const Name = require("./actors/name");
 const PlayBtn = require("./actors/play-btn");
 const Bird = require("./actors/bird");
+const Start = require("./scenes/start");
+const Play = require("./scenes/play");
 
 class Game {
   constructor(canvas) {
@@ -29,12 +31,16 @@ class Game {
     this.actors.playBtn = new PlayBtn(this);
     // 小鸟
     this.actors.bird = new Bird(this);
+    // 大地
+    this.actors.land = new Land(this);
   }
 
   // 创建场景
   createScenes() {
     // 游戏开始场景
     this.scenes.start = new Start(this, "start");
+    // play 场景
+    this.scenes.play = new Play(this, "play");
   }
 
   // 开始事件监听

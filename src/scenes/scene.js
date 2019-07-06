@@ -53,7 +53,7 @@ class Scene {
   click(x, y) {
     for (const key of this.actors) {
       const actor = this.game.actors[key];
-      if (actor.click && actor.isItOn(x, y)) actor.click(x, y);
+      if (actor.click) actor.click(x, y);
     }
   }
 }

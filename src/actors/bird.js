@@ -36,8 +36,8 @@ class Bird extends Actor {
     }
   }
 
-  // 向上升级
-  up() {
+  // 点击向上升起
+  click() {
     if (this.stop) return;
     this.v = -20;
   }
@@ -46,10 +46,6 @@ class Bird extends Actor {
     const args = this.bird[this.wing];
     args[6] = this.y;
     this.game.ctx.drawImage(...args);
-  }
-
-  setStop(value) {
-    this.stop = !!value;
   }
 }
 
