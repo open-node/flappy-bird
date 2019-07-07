@@ -24,7 +24,6 @@ class Score extends Scene {
     const { curr: score, record, best } = this.game.scores;
     const { scoreCard, playBtn, rankBtn } = this.game.actors;
     scoreCard.ranking = "none";
-    console.log(record);
     if (best < score) {
       this.game.scores.best = score;
       scoreCard.isNew = true;
