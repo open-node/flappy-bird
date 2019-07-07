@@ -7,6 +7,7 @@ const Bird = require("./actors/bird");
 const Numbers = require("./actors/numbers");
 const GameOver = require("./actors/game-over");
 const ScoreCard = require("./actors/score-card");
+const Flash = require("./actors/flash");
 const Start = require("./scenes/start");
 const Play = require("./scenes/play");
 const End = require("./scenes/end");
@@ -83,11 +84,13 @@ class Game {
     // 记分牌
     this.actors.scoreCard = new ScoreCard(this);
     // 实时得分
-    this.actors.liveScore = new Numbers(this, true, () => this.scores.curr); // 大号数字显示
+    this.actors.liveScore = new Numbers(this, "b", () => this.scores.curr); // 大号数字显示
     // 本次得分
-    this.actors.currScore = new Numbers(this, false, () => this.scores.curr); // 普通数字显示
+    this.actors.currScore = new Numbers(this, "m", () => this.scores.curr); // 普通数字显示
     // 最高分
-    this.actors.bestScore = new Numbers(this, false, () => this.scores.best); // 普通数字显示
+    this.actors.bestScore = new Numbers(this, "m", () => this.scores.best); // 普通数字显示
+    // 白色透明遮罩，模拟闪光效果
+    this.actors.flash = new Flash(this);
   }
 
   // 创建场景
@@ -177,7 +180,10 @@ class Game {
 
   // 加载游戏所需静态资源
   async loadResources() {
-    const [img, map] = await Promise.all([loadImg("./images/atlas.png"), loadImgMap("./images/atlas.map")]);
+    const [img, map] = await Promise.all([
+      loadImg("./images/atlas.png"),
+      loadImgMap("./images/atlas.map")
+    ]);
     this.img = img;
     const [drawImgs, maps] = this.parseImageMap(img, map);
     this.drawImgs = drawImgs;

@@ -2,7 +2,7 @@
 const Game = require("./src/game");
 const game = new Game(document.getElementById("mycanvas"));
 
-},{"./src/game":13}],2:[function(require,module,exports){
+},{"./src/game":14}],2:[function(require,module,exports){
 /**
  * Actor 类
  * @class
@@ -36,8 +36,8 @@ class Actor {
   reset() {
     this.x = 0;
     this.y = 0;
-    this.w = 0;
-    this.h = 0;
+    this.w = this.game.w;
+    this.h = this.game.h;
   }
 
   /**
@@ -205,6 +205,32 @@ module.exports = Bird;
 },{"./actor":2}],5:[function(require,module,exports){
 const Actor = require("./actor");
 
+class Flash extends Actor {
+  reset() {
+    super.reset();
+    this.alpha = 1;
+  }
+
+  update() {
+    if (this.alpha <= 0) {
+      this.alpha = 0;
+    } else {
+      this.alpha -= 0.02;
+    }
+  }
+
+  render() {
+    this.game.ctx.fillStyle = `rgba(255,255,255,${this.alpha})`;
+    console.log(this.game.ctx.fillStyle);
+    this.game.ctx.fillRect(this.x, this.y, this.w, this.h);
+  }
+}
+
+module.exports = Flash;
+
+},{"./actor":2}],6:[function(require,module,exports){
+const Actor = require("./actor");
+
 class GameOver extends Actor {
   reset() {
     this.y = -48;
@@ -228,7 +254,7 @@ class GameOver extends Actor {
 
 module.exports = GameOver;
 
-},{"./actor":2}],6:[function(require,module,exports){
+},{"./actor":2}],7:[function(require,module,exports){
 const Actor = require("./actor");
 
 class Land extends Actor {
@@ -256,7 +282,7 @@ class Land extends Actor {
 
 module.exports = Land;
 
-},{"./actor":2}],7:[function(require,module,exports){
+},{"./actor":2}],8:[function(require,module,exports){
 const Actor = require("./actor");
 
 class Name extends Actor {
@@ -282,7 +308,7 @@ class Name extends Actor {
 
 module.exports = Name;
 
-},{"./actor":2}],8:[function(require,module,exports){
+},{"./actor":2}],9:[function(require,module,exports){
 const Actor = require("./actor");
 
 class Numbers extends Actor {
@@ -293,42 +319,13 @@ class Numbers extends Actor {
     this.alignValue = 0;
   }
 
-  constructor(game, isTall, getVal) {
+  constructor(game, type, getVal) {
     super(game);
-    this.isTall = isTall;
+    this.type = type;
     this.getVal = getVal;
 
-    this.w = this.isTall ? 26 : 16;
-    this.h = this.isTall ? 36 : 24;
-
-    const { img } = game;
-    const numbers = [
-      [
-        [img, 272, 612, this.w, this.h, this.x, this.y, this.w, this.h], // 0
-        [img, 272, 954, this.w, this.h, this.x, this.y, this.w, this.h], // 1
-        [img, 272, 978, this.w, this.h, this.x, this.y, this.w, this.h], // 2
-        [img, 260, 1002, this.w, this.h, this.x, this.y, this.w, this.h], // 3,
-        [img, 1002, 0, this.w, this.h, this.x, this.y, this.w, this.h], // 4
-        [img, 1002, 24, this.w, this.h, this.x, this.y, this.w, this.h], // 5
-        [img, 1008, 52, this.w, this.h, this.x, this.y, this.w, this.h], // 6
-        [img, 1008, 84, this.w, this.h, this.x, this.y, this.w, this.h], // 7
-        [img, 584, 484, this.w, this.h, this.x, this.y, this.w, this.h], // 8
-        [img, 620, 412, this.w, this.h, this.x, this.y, this.w, this.h] // 9
-      ],
-      [
-        [img, 990, 118, this.w, this.h, this.x, this.y, this.w, this.h], // 0
-        [img, 272, 910, this.w, this.h, this.x, this.y, this.w, this.h], // 1
-        [img, 583, 319, this.w, this.h, this.x, this.y, this.w, this.h], // 2
-        [img, 612, 319, this.w, this.h, this.x, this.y, this.w, this.h], // 3
-        [img, 639, 319, this.w, this.h, this.x, this.y, this.w, this.h], // 4
-        [img, 666, 319, this.w, this.h, this.x, this.y, this.w, this.h], // 5
-        [img, 582, 366, this.w, this.h, this.x, this.y, this.w, this.h], // 6
-        [img, 610, 366, this.w, this.h, this.x, this.y, this.w, this.h], // 7
-        [img, 638, 366, this.w, this.h, this.x, this.y, this.w, this.h], // 8
-        [img, 666, 366, this.w, this.h, this.x, this.y, this.w, this.h] // 9
-      ]
-    ];
-    this.numbers = numbers[this.isTall & 1];
+    this.w = this.type === "b" ? 26 : 16;
+    this.h = this.type === "b" ? 36 : 24;
   }
 
   updateX() {
@@ -347,17 +344,15 @@ class Numbers extends Actor {
     this.updateX();
     for (let i = 0; i < str.length; i += 1) {
       const ch = str[i];
-      const args = this.numbers[ch];
-      args[5] = this.x + i * this.w;
-      args[6] = this.y;
-      this.game.ctx.drawImage(...args);
+      const name = `number_${this.type}_${ch}`;
+      this.game.drawImageByName(name, this.x + i * this.w, this.y);
     }
   }
 }
 
 module.exports = Numbers;
 
-},{"./actor":2}],9:[function(require,module,exports){
+},{"./actor":2}],10:[function(require,module,exports){
 const Actor = require("./actor");
 
 class Pipe extends Actor {
@@ -409,7 +404,7 @@ class Pipe extends Actor {
 
 module.exports = Pipe;
 
-},{"./actor":2}],10:[function(require,module,exports){
+},{"./actor":2}],11:[function(require,module,exports){
 const Actor = require("./actor");
 
 class PlayBtn extends Actor {
@@ -441,7 +436,7 @@ class PlayBtn extends Actor {
 
 module.exports = PlayBtn;
 
-},{"./actor":2}],11:[function(require,module,exports){
+},{"./actor":2}],12:[function(require,module,exports){
 const Actor = require("./actor");
 
 class RankingBtn extends Actor {
@@ -473,7 +468,7 @@ class RankingBtn extends Actor {
 
 module.exports = RankingBtn;
 
-},{"./actor":2}],12:[function(require,module,exports){
+},{"./actor":2}],13:[function(require,module,exports){
 const Actor = require("./actor");
 
 class ScoreCard extends Actor {
@@ -525,7 +520,7 @@ class ScoreCard extends Actor {
 
 module.exports = ScoreCard;
 
-},{"./actor":2}],13:[function(require,module,exports){
+},{"./actor":2}],14:[function(require,module,exports){
 const Background = require("./actors/background");
 const Land = require("./actors/land");
 const Name = require("./actors/name");
@@ -535,6 +530,7 @@ const Bird = require("./actors/bird");
 const Numbers = require("./actors/numbers");
 const GameOver = require("./actors/game-over");
 const ScoreCard = require("./actors/score-card");
+const Flash = require("./actors/flash");
 const Start = require("./scenes/start");
 const Play = require("./scenes/play");
 const End = require("./scenes/end");
@@ -611,11 +607,13 @@ class Game {
     // 记分牌
     this.actors.scoreCard = new ScoreCard(this);
     // 实时得分
-    this.actors.liveScore = new Numbers(this, true, () => this.scores.curr); // 大号数字显示
+    this.actors.liveScore = new Numbers(this, "b", () => this.scores.curr); // 大号数字显示
     // 本次得分
-    this.actors.currScore = new Numbers(this, false, () => this.scores.curr); // 普通数字显示
+    this.actors.currScore = new Numbers(this, "m", () => this.scores.curr); // 普通数字显示
     // 最高分
-    this.actors.bestScore = new Numbers(this, false, () => this.scores.best); // 普通数字显示
+    this.actors.bestScore = new Numbers(this, "m", () => this.scores.best); // 普通数字显示
+    // 白色透明遮罩，模拟闪光效果
+    this.actors.flash = new Flash(this);
   }
 
   // 创建场景
@@ -705,7 +703,10 @@ class Game {
 
   // 加载游戏所需静态资源
   async loadResources() {
-    const [img, map] = await Promise.all([loadImg("./images/atlas.png"), loadImgMap("./images/atlas.map")]);
+    const [img, map] = await Promise.all([
+      loadImg("./images/atlas.png"),
+      loadImgMap("./images/atlas.map")
+    ]);
     this.img = img;
     const [drawImgs, maps] = this.parseImageMap(img, map);
     this.drawImgs = drawImgs;
@@ -724,28 +725,18 @@ class Game {
 
 module.exports = Game;
 
-},{"./actors/background":3,"./actors/bird":4,"./actors/game-over":5,"./actors/land":6,"./actors/name":7,"./actors/numbers":8,"./actors/play-btn":10,"./actors/rank-btn":11,"./actors/score-card":12,"./scenes/end":14,"./scenes/play":15,"./scenes/score":17,"./scenes/start":18}],14:[function(require,module,exports){
+},{"./actors/background":3,"./actors/bird":4,"./actors/flash":5,"./actors/game-over":6,"./actors/land":7,"./actors/name":8,"./actors/numbers":9,"./actors/play-btn":11,"./actors/rank-btn":12,"./actors/score-card":13,"./scenes/end":15,"./scenes/play":16,"./scenes/score":18,"./scenes/start":19}],15:[function(require,module,exports){
 const Scene = require("./scene");
 
 class End extends Scene {
-  update() {
-    if (1 <= this.alpha) {
-      this.alpha = 1;
-    } else {
-      this.alpha += 0.05;
-    }
-    this.game.ctx.globalAlpha = this.alpha;
-    this.game.actors.bird.update();
-  }
-
   enter() {
-    this.game.ctx.globalCompositeOperation = "source-in";
-    this.actors = ["bg", "pipes", "land", "bird"];
+    this.actors = ["bg", "pipes", "land", "bird", "flash"];
     this.alpha = 0;
 
-    const { bg, land, bird, pipes } = this.game.actors;
+    const { bg, land, bird, pipes, flash } = this.game.actors;
     bg.stop = true;
     land.stop = true;
+    flash.reset();
     bird.die();
     for (const x of pipes) x.stop = true;
   }
@@ -753,7 +744,7 @@ class End extends Scene {
 
 module.exports = End;
 
-},{"./scene":16}],15:[function(require,module,exports){
+},{"./scene":17}],16:[function(require,module,exports){
 const Scene = require("./scene");
 const Pipe = require("../actors/pipe");
 
@@ -780,7 +771,7 @@ class Play extends Scene {
 
 module.exports = Play;
 
-},{"../actors/pipe":9,"./scene":16}],16:[function(require,module,exports){
+},{"../actors/pipe":10,"./scene":17}],17:[function(require,module,exports){
 /**
  * Scene 类
  * @class
@@ -855,7 +846,7 @@ class Scene {
 
 module.exports = Scene;
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 const Scene = require("./scene");
 
 class Score extends Scene {
@@ -921,7 +912,7 @@ class Score extends Scene {
 
 module.exports = Score;
 
-},{"./scene":16}],18:[function(require,module,exports){
+},{"./scene":17}],19:[function(require,module,exports){
 const Scene = require("./scene");
 
 class Start extends Scene {
@@ -937,4 +928,4 @@ class Start extends Scene {
 
 module.exports = Start;
 
-},{"./scene":16}]},{},[1]);
+},{"./scene":17}]},{},[1]);

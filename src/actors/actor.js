@@ -31,8 +31,8 @@ class Actor {
   reset() {
     this.x = 0;
     this.y = 0;
-    this.w = 0;
-    this.h = 0;
+    this.w = this.game.w;
+    this.h = this.game.h;
   }
 
   /**

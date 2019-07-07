@@ -1,24 +1,14 @@
 const Scene = require("./scene");
 
 class End extends Scene {
-  update() {
-    if (1 <= this.alpha) {
-      this.alpha = 1;
-    } else {
-      this.alpha += 0.05;
-    }
-    this.game.ctx.globalAlpha = this.alpha;
-    this.game.actors.bird.update();
-  }
-
   enter() {
-    this.game.ctx.globalCompositeOperation = "source-in";
-    this.actors = ["bg", "pipes", "land", "bird"];
+    this.actors = ["bg", "pipes", "land", "bird", "flash"];
     this.alpha = 0;
 
-    const { bg, land, bird, pipes } = this.game.actors;
+    const { bg, land, bird, pipes, flash } = this.game.actors;
     bg.stop = true;
     land.stop = true;
+    flash.reset();
     bird.die();
     for (const x of pipes) x.stop = true;
   }
