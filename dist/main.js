@@ -428,7 +428,7 @@ class PlayBtn extends Actor {
 
   click(x, y) {
     if (this.isItOn(x, y)) {
-      this.game.enter("play");
+      this.game.enter("tour");
     }
   }
 }
@@ -531,6 +531,7 @@ const GameOver = require("./actors/game-over");
 const ScoreCard = require("./actors/score-card");
 const Flash = require("./actors/flash");
 const Start = require("./scenes/start");
+const Tour = require("./scenes/tour");
 const Play = require("./scenes/play");
 const End = require("./scenes/end");
 const Score = require("./scenes/score");
@@ -619,6 +620,8 @@ class Game {
   createScenes() {
     // 游戏开始场景
     this.scenes.start = new Start(this, "start");
+    // 游戏教程场景
+    this.scenes.tour = new Tour(this, "tour");
     // play 场景
     this.scenes.play = new Play(this, "play");
     // end 场景
@@ -746,7 +749,7 @@ class Game {
 
 module.exports = Game;
 
-},{"./actors/background":3,"./actors/bird":4,"./actors/flash":5,"./actors/game-over":6,"./actors/land":7,"./actors/name":8,"./actors/numbers":9,"./actors/play-btn":11,"./actors/rank-btn":12,"./actors/score-card":13,"./scenes/end":15,"./scenes/play":16,"./scenes/score":18,"./scenes/start":19}],15:[function(require,module,exports){
+},{"./actors/background":3,"./actors/bird":4,"./actors/flash":5,"./actors/game-over":6,"./actors/land":7,"./actors/name":8,"./actors/numbers":9,"./actors/play-btn":11,"./actors/rank-btn":12,"./actors/score-card":13,"./scenes/end":15,"./scenes/play":16,"./scenes/score":18,"./scenes/start":19,"./scenes/tour":20}],15:[function(require,module,exports){
 const Scene = require("./scene");
 
 class End extends Scene {
@@ -948,5 +951,24 @@ class Start extends Scene {
 }
 
 module.exports = Start;
+
+},{"./scene":17}],20:[function(require,module,exports){
+const Scene = require("./scene");
+
+class Tour extends Scene {
+  render() {
+    super.render();
+    this.game.drawImageByName("ready", 83, 180);
+    this.game.drawImageByName("tour", 120, 230);
+  }
+
+  enter() {
+    this.actors = ["bg", "land", "bird", "liveScore"];
+    this.game.actors.bird.x = 80;
+    setTimeout(() => this.game.enter("play"), 3000);
+  }
+}
+
+module.exports = Tour;
 
 },{"./scene":17}]},{},[1]);

@@ -9,6 +9,7 @@ const GameOver = require("./actors/game-over");
 const ScoreCard = require("./actors/score-card");
 const Flash = require("./actors/flash");
 const Start = require("./scenes/start");
+const Tour = require("./scenes/tour");
 const Play = require("./scenes/play");
 const End = require("./scenes/end");
 const Score = require("./scenes/score");
@@ -97,6 +98,8 @@ class Game {
   createScenes() {
     // 游戏开始场景
     this.scenes.start = new Start(this, "start");
+    // 游戏教程场景
+    this.scenes.tour = new Tour(this, "tour");
     // play 场景
     this.scenes.play = new Play(this, "play");
     // end 场景

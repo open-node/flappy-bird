@@ -22,7 +22,7 @@ class PlayBtn extends Actor {
 
   click(x, y) {
     if (this.isItOn(x, y)) {
-      this.game.enter("play");
+      this.game.enter("tour");
     }
   }
 }
