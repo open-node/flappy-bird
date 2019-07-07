@@ -1,7 +1,8 @@
 const Scene = require("./scene");
 
 class Score extends Scene {
-  actors = ["bg", "land", "pipes", "gameOver", "scoreCard", "currScore", "bestScore", "playBtn"];
+  actors = ["bg", "land", "pipes", "gameOver", "scoreCard", "currScore", "bestScore", "playBtn", "rankBtn"];
+
   alpha = 0;
 
   enter() {
@@ -20,24 +21,20 @@ class Score extends Scene {
     this.game.actors.bestScore.alignValue = 86;
 
     // 计算名次
-    const { curr: score, record } = this.game.scores;
-    const { scoreCard, playBtn } = this.game.actors;
-    if (this.game.scores.best < score) {
+    const { curr: score, record, best } = this.game.scores;
+    const { scoreCard, playBtn, rankBtn } = this.game.actors;
+    scoreCard.ranking = "none";
+    console.log(record);
+    if (best < score) {
       this.game.scores.best = score;
       scoreCard.isNew = true;
       scoreCard.ranking = 1;
-    }
-
-    if (!scoreCard.ranking) {
-      if (record[0] && record[0] < score) {
-        scoreCard.ranking = 1;
-      } else if (record[1] && record[1] < score) {
-        scoreCard.ranking = 2;
-      } else if (record[2] && record[1] < score) {
-        scoreCard.ranking = 3;
-      } else {
-        scoreCard.ranking = "none";
-      }
+    } else if (record[0] != null && record[0][0] < score) {
+      scoreCard.ranking = 1;
+    } else if (record[1] != null && record[1][0] < score) {
+      scoreCard.ranking = 2;
+    } else if (record[2] != null && record[2][0] < score) {
+      scoreCard.ranking = 3;
     }
 
     // 加入记录，更新排行榜
@@ -48,6 +45,10 @@ class Score extends Scene {
     playBtn.reset();
     playBtn.x = (this.game.w - scoreCard.w) >> 1;
     playBtn.minY = scoreCard.minY + scoreCard.h + 20;
+
+    // 查看rank 按钮
+    rankBtn.reset();
+    rankBtn.minY = scoreCard.minY + scoreCard.h + 20;
   }
 }
 

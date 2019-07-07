@@ -2,6 +2,7 @@ const Background = require("./actors/background");
 const Land = require("./actors/land");
 const Name = require("./actors/name");
 const PlayBtn = require("./actors/play-btn");
+const RankBtn = require("./actors/rank-btn");
 const Bird = require("./actors/bird");
 const Numbers = require("./actors/numbers");
 const GameOver = require("./actors/game-over");
@@ -46,7 +47,7 @@ class Game {
     this.fno = 0; // 程序主帧
     this.actors = {}; // 角色管理器
     this.scores = {
-      curr: 22222222,
+      curr: 0,
       best: 0,
       record: []
     };
@@ -69,6 +70,8 @@ class Game {
     this.actors.name = new Name(this);
     // 开始按钮
     this.actors.playBtn = new PlayBtn(this);
+    // 查看排行按钮
+    this.actors.rankBtn = new RankBtn(this);
     // 小鸟
     this.actors.bird = new Bird(this);
     // 大地
