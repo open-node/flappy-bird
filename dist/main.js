@@ -965,6 +965,7 @@ class Tour extends Scene {
   enter() {
     this.actors = ["bg", "land", "bird", "liveScore"];
     this.game.actors.bird.x = 80;
+    this.game.scores.curr = 0;
     setTimeout(() => this.game.enter("play"), 3000);
   }
 }
