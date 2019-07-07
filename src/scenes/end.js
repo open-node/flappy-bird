@@ -1,10 +1,6 @@
 const Scene = require("./scene");
-const Pipe = require("../actors/pipe");
 
 class End extends Scene {
-  actors = ["bg", "land", "pipes", "bird"];
-  alpha = 0;
-
   update() {
     if (1 <= this.alpha) {
       this.alpha = 1;
@@ -16,6 +12,9 @@ class End extends Scene {
   }
 
   enter() {
+    this.actors = ["bg", "land", "pipes", "bird"];
+    this.alpha = 0;
+
     this.game.actors.bg.stop = true;
     this.game.actors.land.stop = true;
     this.game.actors.bird.stop = true;

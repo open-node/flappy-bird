@@ -1,29 +1,31 @@
 const Scene = require("./scene");
 
 class Score extends Scene {
-  actors = ["bg", "land", "pipes", "gameOver", "scoreCard", "currScore", "bestScore", "playBtn", "rankBtn"];
-
-  alpha = 0;
-
   enter() {
+    this.actors = [
+      "bg",
+      "land",
+      "pipes",
+      "gameOver",
+      "scoreCard",
+      "currScore",
+      "bestScore",
+      "playBtn",
+      "rankBtn"
+    ];
+
+    this.alpha = 0;
+
     this.game.actors.bg.stop = true;
     this.game.actors.land.stop = true;
     this.game.actors.bird.stop = true;
     this.game.actors.bird.v = 0;
     for (const x of this.game.actors.pipes) x.stop = true;
 
-    this.game.actors.currScore.align = "right";
-    this.game.actors.currScore.alignValue = 86;
-    this.game.actors.currScore.y = 280;
-
-    this.game.actors.bestScore.y = 322;
-    this.game.actors.bestScore.align = "right";
-    this.game.actors.bestScore.alignValue = 86;
-
     // 计算名次
     const { curr: score, record, best } = this.game.scores;
     const { scoreCard, playBtn, rankBtn } = this.game.actors;
-    scoreCard.ranking = "none";
+    scoreCard.reset();
     if (best < score) {
       this.game.scores.best = score;
       scoreCard.isNew = true;
@@ -39,6 +41,15 @@ class Score extends Scene {
     // 加入记录，更新排行榜
     this.game.scores.record.push([score, new Date()]);
     this.game.scores.record.sort((a, b) => b[0] - a[0]);
+
+    // 积分显示
+    this.game.actors.currScore.align = "right";
+    this.game.actors.currScore.alignValue = 86;
+    this.game.actors.currScore.y = scoreCard.y + 34;
+
+    this.game.actors.bestScore.align = "right";
+    this.game.actors.bestScore.alignValue = 86;
+    this.game.actors.bestScore.y = scoreCard.y + 74;
 
     // 重新开始按钮
     playBtn.reset();

@@ -2,8 +2,6 @@ const Scene = require("./scene");
 const Pipe = require("../actors/pipe");
 
 class Play extends Scene {
-  actors = ["bg", "land", "pipes", "bird", "liveScore"];
-
   update() {
     super.update();
     const { actors, fno } = this.game;
@@ -11,6 +9,7 @@ class Play extends Scene {
   }
 
   enter() {
+    this.actors = ["bg", "land", "pipes", "bird", "liveScore"];
     const { bg, land, bird, liveScore } = this.game.actors;
     bg.stop = false;
     land.stop = false;

@@ -235,12 +235,9 @@ const Actor = require("./actor");
 class GameOver extends Actor {
   reset() {
     this.y = -48;
-    this.w = 192;
-    this.h = 48;
     this.maxY = 160; // 纵向最大值
+    this.w = 192;
     this.x = (this.game.w - this.w) >> 1;
-    this.oX = 790;
-    this.oY = 115;
     this.v = 0; // 局部帧编号
     this.g = 0.32; // 重力加速度
   }
@@ -252,7 +249,7 @@ class GameOver extends Actor {
   }
 
   render() {
-    this.drawImageSlice();
+    this.game.drawImageByName("game_over", this.x, this.y);
   }
 }
 
@@ -520,11 +517,10 @@ class ScoreCard extends Actor {
     this.h = 118;
     this.y = this.game.h + this.h;
     this.minY = 260; // 纵向最大值
-    this.oX = 0;
-    this.oY = 518;
     this.v = 0; // 局部帧编号
     this.g = 0.32; // 重力加速度
     this.isNew = false; // 是否是新纪录
+    this.ranking = "none";
   }
 
   constructor(game) {
@@ -547,11 +543,17 @@ class ScoreCard extends Actor {
     if (this.y <= this.minY) return;
     this.y -= this.v * this.g;
     this.v += 1;
+    this.game.actors.currScore.y = this.y + 34;
+    this.game.actors.bestScore.y = this.y + 74;
   }
 
   render() {
-    this.drawImageSlice();
-    this.game.drawImageByName(`medal_${this.ranking}`, this.x + 32, this.y + 45);
+    this.game.drawImageByName("score_card", this.x, this.y);
+    this.game.drawImageByName(
+      `medal_${this.ranking}`,
+      this.x + 32,
+      this.y + 45
+    );
   }
 }
 
@@ -758,12 +760,8 @@ module.exports = Game;
 
 },{"./actors/background":3,"./actors/bird":4,"./actors/game-over":5,"./actors/land":6,"./actors/name":7,"./actors/numbers":8,"./actors/play-btn":10,"./actors/rank-btn":11,"./actors/score-card":12,"./scenes/end":14,"./scenes/play":15,"./scenes/score":17,"./scenes/start":18}],14:[function(require,module,exports){
 const Scene = require("./scene");
-const Pipe = require("../actors/pipe");
 
 class End extends Scene {
-  actors = ["bg", "land", "pipes", "bird"];
-  alpha = 0;
-
   update() {
     if (1 <= this.alpha) {
       this.alpha = 1;
@@ -775,6 +773,9 @@ class End extends Scene {
   }
 
   enter() {
+    this.actors = ["bg", "land", "pipes", "bird"];
+    this.alpha = 0;
+
     this.game.actors.bg.stop = true;
     this.game.actors.land.stop = true;
     this.game.actors.bird.stop = true;
@@ -785,13 +786,11 @@ class End extends Scene {
 
 module.exports = End;
 
-},{"../actors/pipe":9,"./scene":16}],15:[function(require,module,exports){
+},{"./scene":16}],15:[function(require,module,exports){
 const Scene = require("./scene");
 const Pipe = require("../actors/pipe");
 
 class Play extends Scene {
-  actors = ["bg", "land", "pipes", "bird", "liveScore"];
-
   update() {
     super.update();
     const { actors, fno } = this.game;
@@ -799,6 +798,7 @@ class Play extends Scene {
   }
 
   enter() {
+    this.actors = ["bg", "land", "pipes", "bird", "liveScore"];
     const { bg, land, bird, liveScore } = this.game.actors;
     bg.stop = false;
     land.stop = false;
@@ -892,29 +892,31 @@ module.exports = Scene;
 const Scene = require("./scene");
 
 class Score extends Scene {
-  actors = ["bg", "land", "pipes", "gameOver", "scoreCard", "currScore", "bestScore", "playBtn", "rankBtn"];
-
-  alpha = 0;
-
   enter() {
+    this.actors = [
+      "bg",
+      "land",
+      "pipes",
+      "gameOver",
+      "scoreCard",
+      "currScore",
+      "bestScore",
+      "playBtn",
+      "rankBtn"
+    ];
+
+    this.alpha = 0;
+
     this.game.actors.bg.stop = true;
     this.game.actors.land.stop = true;
     this.game.actors.bird.stop = true;
     this.game.actors.bird.v = 0;
     for (const x of this.game.actors.pipes) x.stop = true;
 
-    this.game.actors.currScore.align = "right";
-    this.game.actors.currScore.alignValue = 86;
-    this.game.actors.currScore.y = 280;
-
-    this.game.actors.bestScore.y = 322;
-    this.game.actors.bestScore.align = "right";
-    this.game.actors.bestScore.alignValue = 86;
-
     // 计算名次
     const { curr: score, record, best } = this.game.scores;
     const { scoreCard, playBtn, rankBtn } = this.game.actors;
-    scoreCard.ranking = "none";
+    scoreCard.reset();
     if (best < score) {
       this.game.scores.best = score;
       scoreCard.isNew = true;
@@ -930,6 +932,15 @@ class Score extends Scene {
     // 加入记录，更新排行榜
     this.game.scores.record.push([score, new Date()]);
     this.game.scores.record.sort((a, b) => b[0] - a[0]);
+
+    // 积分显示
+    this.game.actors.currScore.align = "right";
+    this.game.actors.currScore.alignValue = 86;
+    this.game.actors.currScore.y = scoreCard.y + 34;
+
+    this.game.actors.bestScore.align = "right";
+    this.game.actors.bestScore.alignValue = 86;
+    this.game.actors.bestScore.y = scoreCard.y + 74;
 
     // 重新开始按钮
     playBtn.reset();
@@ -948,10 +959,10 @@ module.exports = Score;
 const Scene = require("./scene");
 
 class Start extends Scene {
-  // 角色，有层级之分，越靠后的z层级越高，会覆盖前面的
-  actors = ["bg", "land", "name", "playBtn", "bird"];
-
   enter() {
+    // 角色，有层级之分，越靠后的z层级越高，会覆盖前面的
+    this.actors = ["bg", "land", "name", "playBtn", "bird"];
+
     this.game.actors.bg.stop = true;
     this.game.actors.land.stop = true;
     this.game.actors.bird.stop = true;
