@@ -9,10 +9,11 @@ class PlayBtn extends Actor {
     this.x = 124; // 图形在画布中的x位置偏移量
     this.y = 640; // 图形在画布中的y位置偏移量
     this.v = 0; // 按钮纵向速度，有方向，大于0朝下，小于0朝上
+    this.minY = 360;
   }
 
   update() {
-    if (this.v > 15) return;
+    if (this.y < this.minY) return;
     this.v += 1;
     this.y -= this.v * 1.5;
   }
@@ -23,7 +24,11 @@ class PlayBtn extends Actor {
   }
 
   click(x, y) {
-    if (this.isItOn(x, y)) this.game.enter("play");
+    debugger;
+    if (this.isItOn(x, y)) {
+      debugger;
+      this.game.enter("play");
+    }
   }
 }
 

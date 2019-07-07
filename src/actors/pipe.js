@@ -2,9 +2,9 @@ const Actor = require("./actor");
 
 class Pipe extends Actor {
   reset() {
-    this.gap = 150;
+    this.gap = 200;
     const { img } = this.game;
-    this.uH = (20 + Math.random() * 300) | 0; // 上管道高度, 高度在20 ~ 100 之间随机
+    this.uH = (10 + Math.random() * 300) | 0; // 上管道高度, 高度在20 ~ 100 之间随机
     this.dH = 640 - 112 - this.gap - this.uH; // 下管道高度
     this.x = 360;
     this.y = 528;
@@ -13,6 +13,7 @@ class Pipe extends Actor {
     this.h = 326;
     this.up = [img, 112, 640 + this.h - this.uH, this.w, this.uH, this.x, 0, this.w, this.uH];
     this.down = [img, 168, 640, this.w, this.dH, this.x, this.uH + this.gap, this.w, this.dH];
+    this.passed = false;
   }
 
   update(collection) {
@@ -25,6 +26,12 @@ class Pipe extends Actor {
     if (bird.aabb(this.x, 0, this.w, this.uH) || bird.aabb(this.x, this.uH + this.gap, this.w, this.dH)) {
       // game over
       return this.game.enter("end");
+    }
+
+    // 检测是否小鸟越过
+    if (!this.passed && this.x + this.w < bird.x) {
+      this.game.scores.curr += 1;
+      this.passed = true;
     }
 
     // 判断是否出界，出界从队列移除

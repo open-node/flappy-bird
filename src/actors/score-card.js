@@ -2,15 +2,16 @@ const Actor = require("./actor");
 
 class ScoreCard extends Actor {
   reset() {
-    this.x = 81;
-    this.w = 230;
+    this.x = 64;
+    this.w = 232;
     this.h = 118;
     this.y = this.game.h + this.h;
-    this.minY = 300; // 纵向最大值
+    this.minY = 260; // 纵向最大值
     this.oX = 0;
     this.oY = 518;
     this.v = 0; // 局部帧编号
     this.g = 0.32; // 重力加速度
+    this.isNew = false; // 是否是新纪录
   }
 
   constructor(game) {
@@ -37,6 +38,7 @@ class ScoreCard extends Actor {
 
   render() {
     this.drawImageSlice();
+    this.game.drawImageByName(`medal_${this.ranking}`, this.x + 32, this.y + 45);
   }
 }
 

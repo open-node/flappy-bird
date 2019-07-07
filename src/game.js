@@ -11,6 +11,28 @@ const Play = require("./scenes/play");
 const End = require("./scenes/end");
 const Score = require("./scenes/score");
 
+const loadImg = src =>
+  new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      resolve(img);
+    };
+    img.onerror = e => {
+      reject(e);
+    };
+
+    img.src = src;
+  });
+
+const loadImgMap = src =>
+  new Promise((resolve, reject) => {
+    fetch(src)
+      .then(res => {
+        resolve(res.text());
+      })
+      .catch(reject);
+  });
+
 class Game {
   constructor(canvas) {
     this.canvas = canvas;
@@ -24,10 +46,17 @@ class Game {
     this.fno = 0; // 程序主帧
     this.actors = {}; // 角色管理器
     this.scores = {
-      curr: 0,
-      best: 0
+      curr: 22222222,
+      best: 0,
+      record: []
     };
-    this.loadResources(this.start.bind(this));
+    this.init();
+  }
+
+  // 初始化, 资源加载之类的
+  async init() {
+    await this.loadResources();
+    this.start();
   }
 
   // 创建角色, 并非游戏全部角色
@@ -124,11 +153,41 @@ class Game {
     scene.enter();
   }
 
+  // 解析图片map
+  parseImageMap(img, map) {
+    const maps = {};
+    const drawImgs = {};
+    map
+      .trim()
+      .split("\n")
+      .forEach(line => {
+        const [name, x, y, w, h] = line.split(" ").map((n, i) => {
+          if (i) return parseInt(n, 10);
+          return n;
+        });
+        maps[name] = { x, y, w, h };
+        drawImgs[name] = [img, x, y, w, h, 0, 0, w, h];
+      });
+
+    return [drawImgs, maps];
+  }
+
   // 加载游戏所需静态资源
-  loadResources(callback) {
-    this.img = new Image();
-    this.img.onload = callback;
-    this.img.src = "./images/atlas.png";
+  async loadResources() {
+    const [img, map] = await Promise.all([loadImg("./images/atlas.png"), loadImgMap("./images/atlas.map")]);
+    this.img = img;
+    const [drawImgs, maps] = this.parseImageMap(img, map);
+    this.drawImgs = drawImgs;
+    this.imgMaps = maps;
+  }
+
+  // 绘制图片
+  drawImageByName(name, x, y) {
+    const args = this.drawImgs[name];
+    if (!args) throw Error("图片不存在");
+    args[5] = x;
+    args[6] = y;
+    this.ctx.drawImage(...args);
   }
 }
 

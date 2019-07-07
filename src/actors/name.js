@@ -3,10 +3,6 @@ const Actor = require("./actor");
 class Name extends Actor {
   reset() {
     this.v = 0;
-    this.oX = 700;
-    this.oY = 180;
-    this.w = 180;
-    this.h = 55;
     this.x = 90;
     this.y = 0;
   }
@@ -21,8 +17,7 @@ class Name extends Actor {
   }
 
   render() {
-    const { ctx, img } = this.game;
-    ctx.drawImage(img, this.oX, this.oY, this.w, this.h, this.x, this.y, this.w, this.h);
+    this.game.drawImageByName("name", this.x, this.y);
   }
 }
 

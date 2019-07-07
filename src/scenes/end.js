@@ -9,7 +9,7 @@ class End extends Scene {
     if (1 <= this.alpha) {
       this.alpha = 1;
     } else {
-      this.alpha += 0.01;
+      this.alpha += 0.05;
     }
     this.game.ctx.globalAlpha = this.alpha;
     this.game.actors.bird.fall();

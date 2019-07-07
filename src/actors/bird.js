@@ -55,7 +55,7 @@ class Bird extends Actor {
   // 点击向上升起
   click() {
     if (this.stop) return;
-    this.v = -30;
+    this.v = -20;
   }
 
   // game over 小鸟大头朝下坠毁

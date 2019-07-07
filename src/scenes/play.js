@@ -2,7 +2,7 @@ const Scene = require("./scene");
 const Pipe = require("../actors/pipe");
 
 class Play extends Scene {
-  actors = ["bg", "land", "pipes", "liveScore", "bird"];
+  actors = ["bg", "land", "pipes", "bird", "liveScore"];
 
   update() {
     super.update();
@@ -11,11 +11,15 @@ class Play extends Scene {
   }
 
   enter() {
-    this.game.actors.bg.stop = false;
-    this.game.actors.land.stop = false;
-    this.game.actors.bird.stop = false;
-    this.game.actors.bird.x = 80;
-    this.game.actors.currScore.y = 100;
+    const { bg, land, bird, liveScore } = this.game.actors;
+    bg.stop = false;
+    land.stop = false;
+    bird.reset();
+    bird.stop = false;
+    bird.x = 80;
+    liveScore.y = 100;
+    this.game.actors.pipes = [];
+    this.game.scores.curr = 0; // 分数清零
   }
 }
 
