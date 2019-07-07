@@ -1,5 +1,7 @@
 const Actor = require("./actor");
 
+const n = ((Math.random() * 7919) | 0) % 3;
+
 class Bird extends Actor {
   reset() {
     this.x = 164;
@@ -7,26 +9,11 @@ class Bird extends Actor {
     this.w = 32;
     this.h = 32;
     this.wing = 0;
+    this.isDead = false; // 是否已死亡，先死往后后坠毁完毕
     this.falled = false; // 是否已坠毁
     this.v = 0; // 局部帧编号
     this.stop = false; // 是否停止动画
     this.g = 0.32; // 重力加速度
-  }
-
-  constructor(game) {
-    super(game);
-
-    const { img } = game;
-    const birds = [
-      [
-        [img, 175, 975, this.w, this.h, this.x, -16, this.w, this.h],
-        [img, 230, 650, this.w, this.h, this.x, -16, this.w, this.h],
-        [img, 230, 702, this.w, this.h, this.x, -16, this.w, this.h]
-      ]
-    ];
-    // 三只小鸟，随机选择一个
-    const n = ((Math.random() * 7919) | 0) % birds.length;
-    this.bird = birds[n];
   }
 
   update() {
@@ -38,8 +25,9 @@ class Bird extends Actor {
 
     // 落地会摔死
     if (this.game.h - 112 < this.y) {
+      this.falled = true;
       // 转场进入game over
-      this.game.enter("end");
+      this.game.enter("score");
     }
 
     // 降落不用煽动翅膀
@@ -54,30 +42,20 @@ class Bird extends Actor {
 
   // 点击向上升起
   click() {
-    if (this.stop) return;
+    if (this.isDead) return;
     this.v = -20;
   }
 
   // game over 小鸟大头朝下坠毁
-  fall() {
-    if (this.falled) return;
-    if (this.game.h - 112 < this.y) {
-      this.game.ctx.globalAlpha = 1;
-      this.falled = true;
-      // 进入成绩显示场景
-      this.game.enter("score");
-    }
-    this.y += this.v * this.g;
-    this.v += 1;
+  die() {
+    this.isDead = true;
+    this.v = 0;
   }
 
   render() {
     // 坠毁后不显示了
     if (this.falled) return;
-    const args = this.bird[this.wing];
-    args[5] = this.x;
-    args[6] = this.y;
-    this.game.ctx.drawImage(...args);
+    this.game.drawImageByName(`bird_${n}_${this.wing}`, this.x, this.y);
   }
 }
 

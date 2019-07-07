@@ -5,8 +5,6 @@ class Land extends Actor {
     this.x = 0;
     this.y = 528;
     this.stop = true;
-    this.oX = 585;
-    this.oY = 0;
     this.w = 335;
     this.h = 110;
   }
@@ -18,11 +16,10 @@ class Land extends Actor {
   }
 
   render() {
-    const { ctx, img } = this.game;
     // 收尾详解三个切面图
-    ctx.drawImage(img, this.oX, this.oY, this.w, this.h, this.x, this.y, this.w, this.h);
-    ctx.drawImage(img, this.oX, this.oY, this.w, this.h, this.x + this.w, this.y, this.w, this.h);
-    ctx.drawImage(img, this.oX, this.oY, this.w, this.h, this.x + this.w * 2, this.y, this.w, this.h);
+    this.game.drawImageByName("land", this.x, this.y);
+    this.game.drawImageByName("land", this.x + this.w, this.y);
+    this.game.drawImageByName("land", this.x + this.w * 2, this.y);
   }
 }
 
