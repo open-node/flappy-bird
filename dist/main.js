@@ -67,7 +67,12 @@ class Actor {
     // x < this.x + this.w 目标的左侧在当前右侧之左
     // y < this.y + this.h 目标顶部在当前底部之上
     // this.y < y + h 目标底部在当前顶部之下
-    return this.x < x + w && x < this.x + this.w && y < this.y + this.h && this.y < y + h;
+    return (
+      this.x < x + w &&
+      x < this.x + this.w &&
+      y < this.y + this.h &&
+      this.y < y + h
+    );
   }
 
   /**
@@ -76,7 +81,9 @@ class Actor {
    * @return {boolean}
    */
   isItOn(cX, cY) {
-    return cX > this.x && cX < this.x + this.w && cY > this.y && cY < this.y + this.h;
+    return (
+      cX > this.x && cX < this.x + this.w && cY > this.y && cY < this.y + this.h
+    );
   }
 
   /**
@@ -85,15 +92,12 @@ class Actor {
    * @return {boolean}
    */
   get isOut() {
-    return this.x < -this.w || this.game.w < this.x || this.game.h < this.y || this.y < 0;
-  }
-
-  /**
-   * 绘制图片切片
-   */
-  drawImageSlice() {
-    const { ctx, img } = this.game;
-    ctx.drawImage(img, this.oX, this.oY, this.w, this.h, this.x, this.y, this.w, this.h);
+    return (
+      this.x < -this.w ||
+      this.game.w < this.x ||
+      this.game.h < this.y ||
+      this.y < 0
+    );
   }
 }
 
