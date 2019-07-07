@@ -221,7 +221,6 @@ class Flash extends Actor {
 
   render() {
     this.game.ctx.fillStyle = `rgba(255,255,255,${this.alpha})`;
-    console.log(this.game.ctx.fillStyle);
     this.game.ctx.fillRect(this.x, this.y, this.w, this.h);
   }
 }
@@ -683,6 +682,7 @@ class Game {
   }
 
   // 解析图片map
+  // name x y w h 总共五个值
   parseImageMap(img, map) {
     const maps = {};
     const drawImgs = {};
@@ -701,12 +701,33 @@ class Game {
     return [drawImgs, maps];
   }
 
+  mockLoading() {
+    let n = 0;
+    const timer = setInterval(() => {
+      if (n === 99) {
+        clearInterval(timer);
+      } else {
+        n += 1;
+      }
+      this.ctx.save();
+      this.ctx.clearRect(0, 0, this.w, this.h);
+      this.ctx.textAlign = "center";
+      this.ctx.font = "14px Arial";
+      this.ctx.fillText(`Loading resources ${n} / 100...`, this.w >> 1, 150);
+      this.ctx.restore();
+    }, 50);
+
+    return timer;
+  }
+
   // 加载游戏所需静态资源
   async loadResources() {
+    const timer = this.mockLoading();
     const [img, map] = await Promise.all([
       loadImg("./images/atlas.png"),
       loadImgMap("./images/atlas.map")
     ]);
+    clearInterval(timer);
     this.img = img;
     const [drawImgs, maps] = this.parseImageMap(img, map);
     this.drawImgs = drawImgs;
