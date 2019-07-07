@@ -9,7 +9,7 @@ class Play extends Scene {
   }
 
   enter() {
-    this.actors = ["bg", "land", "pipes", "bird", "liveScore"];
+    this.actors = ["bg", "pipes", "land", "bird", "liveScore"];
     const { bg, land, bird, liveScore } = this.game.actors;
     bg.stop = false;
     land.stop = false;

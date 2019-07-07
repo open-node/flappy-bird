@@ -5,7 +5,6 @@ class Score extends Scene {
     this.actors = [
       "bg",
       "land",
-      "pipes",
       "gameOver",
       "scoreCard",
       "currScore",

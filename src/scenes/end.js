@@ -12,7 +12,8 @@ class End extends Scene {
   }
 
   enter() {
-    this.actors = ["bg", "land", "pipes", "bird"];
+    this.game.ctx.globalCompositeOperation = "source-in";
+    this.actors = ["bg", "pipes", "land", "bird"];
     this.alpha = 0;
 
     const { bg, land, bird, pipes } = this.game.actors;
