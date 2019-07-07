@@ -62,6 +62,7 @@ class Bird extends Actor {
   fall() {
     if (this.falled) return;
     if (this.game.h - 112 < this.y) {
+      this.game.ctx.globalAlpha = 1;
       this.falled = true;
       // 进入成绩显示场景
       this.game.enter("score");
