@@ -10,21 +10,21 @@ const game = new Game(document.getElementById("mycanvas"));
  * @return {Actor} Instance
  */
 class Actor {
-  /* 角色 x 坐标值 */
-  x = 0;
-
-  /* 角色 y 坐标值 */
-  y = 0;
-
-  /* 角色 宽度 */
-  w = 0;
-
-  /* 角色 高度 */
-  h = 0;
-
   /** Create a actor instance */
   constructor(game) {
     this.game = game;
+    /* 角色 x 坐标值 */
+    this.x = 0;
+
+    /* 角色 y 坐标值 */
+    this.y = 0;
+
+    /* 角色 宽度 */
+    this.w = 0;
+
+    /* 角色 高度 */
+    this.h = 0;
+
     this.reset();
   }
 
@@ -821,11 +821,11 @@ module.exports = Play;
  * @return {Scene} Instance
  */
 class Scene {
-  // 当前场景需要的角色名称
-  actors = [""];
-
   /** Create a scene instance */
   constructor(game, name) {
+    // 当前场景需要的角色名称
+    this.actors = [""];
+
     this.name = name;
     this.game = game;
   }

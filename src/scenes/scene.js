@@ -5,11 +5,11 @@
  * @return {Scene} Instance
  */
 class Scene {
-  // 当前场景需要的角色名称
-  actors = [""];
-
   /** Create a scene instance */
   constructor(game, name) {
+    // 当前场景需要的角色名称
+    this.actors = [""];
+
     this.name = name;
     this.game = game;
   }
