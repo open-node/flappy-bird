@@ -3,9 +3,13 @@ const Land = require("./actors/land");
 const Name = require("./actors/name");
 const PlayBtn = require("./actors/play-btn");
 const Bird = require("./actors/bird");
+const Numbers = require("./actors/numbers");
+const GameOver = require("./actors/game-over");
+const ScoreCard = require("./actors/score-card");
 const Start = require("./scenes/start");
 const Play = require("./scenes/play");
 const End = require("./scenes/end");
+const Score = require("./scenes/score");
 
 class Game {
   constructor(canvas) {
@@ -19,6 +23,10 @@ class Game {
     this.timer = null;
     this.fno = 0; // 程序主帧
     this.actors = {}; // 角色管理器
+    this.scores = {
+      curr: 0,
+      best: 0
+    };
     this.loadResources(this.start.bind(this));
   }
 
@@ -38,6 +46,16 @@ class Game {
     this.actors.land = new Land(this);
     // 管道角色集合
     this.actors.pipes = [];
+    // game over 提示
+    this.actors.gameOver = new GameOver(this);
+    // 记分牌
+    this.actors.scoreCard = new ScoreCard(this);
+    // 实时得分
+    this.actors.liveScore = new Numbers(this, true, () => this.scores.curr); // 大号数字显示
+    // 本次得分
+    this.actors.currScore = new Numbers(this, false, () => this.scores.curr); // 普通数字显示
+    // 最高分
+    this.actors.bestScore = new Numbers(this, false, () => this.scores.best); // 普通数字显示
   }
 
   // 创建场景
@@ -48,6 +66,8 @@ class Game {
     this.scenes.play = new Play(this, "play");
     // end 场景
     this.scenes.end = new End(this, "end");
+    // end 场景
+    this.scenes.score = new Score(this, "score");
   }
 
   // 开始事件监听

@@ -10,7 +10,7 @@ class Bird extends Actor {
     this.falled = false; // 是否已坠毁
     this.v = 0; // 局部帧编号
     this.stop = false; // 是否停止动画
-    this.g = 0.23; // 重力加速度
+    this.g = 0.32; // 重力加速度
   }
 
   constructor(game) {
@@ -55,18 +55,24 @@ class Bird extends Actor {
   // 点击向上升起
   click() {
     if (this.stop) return;
-    this.v = -20;
+    this.v = -30;
   }
 
   // game over 小鸟大头朝下坠毁
   fall() {
     if (this.falled) return;
-    if (this.game.h - 112 < this.y) this.falled = true;
+    if (this.game.h - 112 < this.y) {
+      this.falled = true;
+      // 进入成绩显示场景
+      this.game.enter("score");
+    }
     this.y += this.v * this.g;
     this.v += 1;
   }
 
   render() {
+    // 坠毁后不显示了
+    if (this.falled) return;
     const args = this.bird[this.wing];
     args[5] = this.x;
     args[6] = this.y;

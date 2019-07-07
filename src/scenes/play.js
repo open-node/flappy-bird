@@ -2,7 +2,7 @@ const Scene = require("./scene");
 const Pipe = require("../actors/pipe");
 
 class Play extends Scene {
-  actors = ["bg", "land", "pipes", "bird"];
+  actors = ["bg", "land", "pipes", "liveScore", "bird"];
 
   update() {
     super.update();
@@ -15,6 +15,7 @@ class Play extends Scene {
     this.game.actors.land.stop = false;
     this.game.actors.bird.stop = false;
     this.game.actors.bird.x = 80;
+    this.game.actors.currScore.y = 100;
   }
 }
 

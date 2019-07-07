@@ -82,6 +82,14 @@ class Actor {
   get isOut() {
     return this.x < -this.w || this.game.w < this.x || this.game.h < this.y || this.y < 0;
   }
+
+  /**
+   * 绘制图片切片
+   */
+  drawImageSlice() {
+    const { ctx, img } = this.game;
+    ctx.drawImage(img, this.oX, this.oY, this.w, this.h, this.x, this.y, this.w, this.h);
+  }
 }
 
 module.exports = Actor;
