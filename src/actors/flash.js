@@ -15,8 +15,10 @@ class Flash extends Actor {
   }
 
   render() {
+    this.game.ctx.save();
     this.game.ctx.fillStyle = `rgba(255,255,255,${this.alpha})`;
     this.game.ctx.fillRect(this.x, this.y, this.w, this.h);
+    this.game.ctx.restore();
   }
 }
 
