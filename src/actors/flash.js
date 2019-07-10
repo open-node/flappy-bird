@@ -2,6 +2,10 @@ const Actor = require("./actor");
 
 class Flash extends Actor {
   reset() {
+    this.x = 0;
+    this.y = 0;
+    this.w = this.game.w;
+    this.h = this.game.h;
     super.reset();
     this.alpha = 1;
   }

@@ -38,6 +38,7 @@ const loadImgMap = src =>
 
 class Game {
   constructor(canvas) {
+    this.env = "development";
     this.canvas = canvas;
     this.ctx = this.canvas.getContext("2d");
     this.img = null; // 资源图片，因为合成在了一起，所以只有一个图片资源需要加载
@@ -151,9 +152,10 @@ class Game {
 
     // 事件监听
     this.listenEvent();
+    this.draw = this.draw.bind(this);
 
     // 游戏主循环启动
-    this.timer = setInterval(this.draw.bind(this), 20);
+    this.timer = requestAnimationFrame(this.draw);
   }
 
   draw() {
@@ -173,6 +175,7 @@ class Game {
 
     // 输出调试信息
     if (this.env === "development") this.debugg();
+    requestAnimationFrame(this.draw);
   }
 
   debugg() {
