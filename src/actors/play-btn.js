@@ -2,10 +2,8 @@ const Actor = require("./actor");
 
 class PlayBtn extends Actor {
   reset() {
-    this.w = 112; // 图形高度
-    this.h = 62; // 图形宽度
-    this.x = 124; // 图形在画布中的x位置偏移量
-    this.y = 640; // 图形在画布中的y位置偏移量
+    this.x = (this.game.w - this.w) >> 1; // 图形在画布中的x位置偏移量
+    this.y = this.game.h; // 图形在画布中的y位置偏移量
     this.v = 0; // 按钮纵向速度，有方向，大于0朝下，小于0朝上
     this.minY = 360;
   }

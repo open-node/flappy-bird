@@ -8,13 +8,10 @@ class Numbers extends Actor {
     this.alignValue = 0;
   }
 
-  constructor(game, type, getVal) {
-    super(game);
+  constructor(game, size, type, getVal) {
+    super(game, size);
     this.type = type;
     this.getVal = getVal;
-
-    this.w = this.type === "b" ? 26 : 16;
-    this.h = this.type === "b" ? 36 : 24;
   }
 
   updateX() {

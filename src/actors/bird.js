@@ -4,10 +4,8 @@ const n = ((Math.random() * 7919) | 0) % 3;
 
 class Bird extends Actor {
   reset() {
-    this.x = 164;
-    this.y = 300;
-    this.w = 32;
-    this.h = 32;
+    this.x = (this.game.w - this.w) >> 1;
+    this.y = 260;
     this.wing = 0;
     this.isDead = false; // 是否已死亡，先死往后后坠毁完毕
     this.falled = false; // 是否已坠毁

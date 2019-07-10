@@ -6,7 +6,7 @@
  */
 class Actor {
   /** Create a actor instance */
-  constructor(game) {
+  constructor(game, size) {
     this.game = game;
     /* 角色 x 坐标值 */
     this.x = 0;
@@ -20,6 +20,12 @@ class Actor {
     /* 角色 高度 */
     this.h = 0;
 
+    // 根据资源map，直接设置角色的宽高
+    if (size) {
+      this.w = size.w;
+      this.h = size.h;
+    }
+
     this.reset();
   }
 
@@ -28,12 +34,7 @@ class Actor {
    *
    * @return {void}
    */
-  reset() {
-    this.x = 0;
-    this.y = 0;
-    this.w = this.game.w;
-    this.h = this.game.h;
-  }
+  reset() {}
 
   /**
    * 更新参数值

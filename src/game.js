@@ -51,6 +51,7 @@ class Game {
       best: 0,
       record: []
     };
+    this.callbacks = new Map();
     this.init();
   }
 
@@ -72,29 +73,44 @@ class Game {
   // 场景特有的角色一般在场景内创建
   createActors() {
     // 游戏背景
-    this.actors.bg = new Background(this);
+    this.actors.bg = new Background(this, this.imgMaps.bg_0);
     // 开始页面游戏名称
-    this.actors.name = new Name(this);
-    // 开始按钮
-    this.actors.playBtn = new PlayBtn(this);
-    // 查看排行按钮
-    this.actors.rankBtn = new RankBtn(this);
+    this.actors.name = new Name(this, this.imgMaps.name);
     // 小鸟
-    this.actors.bird = new Bird(this);
+    this.actors.bird = new Bird(this, this.imgMaps.bird_0_0);
     // 大地
-    this.actors.land = new Land(this);
+    this.actors.land = new Land(this, this.imgMaps.land);
     // 管道角色集合
     this.actors.pipes = [];
     // game over 提示
-    this.actors.gameOver = new GameOver(this);
+    this.actors.gameOver = new GameOver(this, this.imgMaps.game_over);
     // 记分牌
-    this.actors.scoreCard = new ScoreCard(this);
+    this.actors.scoreCard = new ScoreCard(this, this.imgMaps.score_card);
+    // 开始按钮
+    this.actors.playBtn = new PlayBtn(this, this.imgMaps.play_btn);
+    // 查看排行按钮
+    this.actors.rankBtn = new RankBtn(this, this.imgMaps.rank_btn);
     // 实时得分
-    this.actors.liveScore = new Numbers(this, "b", () => this.scores.curr); // 大号数字显示
+    this.actors.liveScore = new Numbers(
+      this,
+      this.imgMaps.number_b_0,
+      "b",
+      () => this.scores.curr
+    ); // 大号数字显示
     // 本次得分
-    this.actors.currScore = new Numbers(this, "m", () => this.scores.curr); // 普通数字显示
+    this.actors.currScore = new Numbers(
+      this,
+      this.imgMaps.number_m_0,
+      "m",
+      () => this.scores.curr
+    ); // 普通数字显示
     // 最高分
-    this.actors.bestScore = new Numbers(this, "m", () => this.scores.best); // 普通数字显示
+    this.actors.bestScore = new Numbers(
+      this,
+      this.imgMaps.number_m_0,
+      "m",
+      () => this.scores.best
+    ); // 普通数字显示
     // 白色透明遮罩，模拟闪光效果
     this.actors.flash = new Flash(this);
   }
@@ -137,18 +153,26 @@ class Game {
     this.listenEvent();
 
     // 游戏主循环启动
-    this.timer = setInterval(() => {
-      this.fno += 1;
-      // 擦除
-      this.ctx.clearRect(0, 0, this.w, this.h);
-      // 场景更新
-      this.scene.update();
-      // 场景渲染
-      this.scene.render();
+    this.timer = setInterval(this.draw.bind(this), 20);
+  }
 
-      // 输出调试信息
-      this.debugg();
-    }, 20);
+  draw() {
+    this.fno += 1;
+    // 擦除
+    this.ctx.clearRect(0, 0, this.w, this.h);
+    // 场景更新
+    this.scene.update();
+    // 场景渲染
+    this.scene.render();
+    // 事件函数执行
+    const handlers = this.callbacks.get(this.fno);
+    if (handlers) {
+      for (const handler of handlers) handler();
+      this.callbacks.delete(this.fno);
+    }
+
+    // 输出调试信息
+    if (this.env === "development") this.debugg();
   }
 
   debugg() {
@@ -220,6 +244,15 @@ class Game {
     this.imgMaps = maps;
   }
 
+  // 绘制图片水平居中
+  drawImageAlignCenterByName(name, y) {
+    const args = this.drawImgs[name];
+    if (!args) throw Error("图片不存在");
+    args[5] = (this.w - args[3]) >> 1;
+    args[6] = y;
+    this.ctx.drawImage(...args);
+  }
+
   // 绘制图片
   drawImageByName(name, x, y) {
     const args = this.drawImgs[name];
@@ -227,6 +260,14 @@ class Game {
     args[5] = x;
     args[6] = y;
     this.ctx.drawImage(...args);
+  }
+
+  // 注册帧回调函数
+  registCallback(frames, handler) {
+    const fno = this.fno + frames;
+    const handlers = this.callbacks.get(fno) || [];
+    if (!handler.length) this.callbacks.set(fno, handlers);
+    handlers.push(handler);
   }
 }
 

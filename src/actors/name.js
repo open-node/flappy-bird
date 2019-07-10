@@ -3,7 +3,7 @@ const Actor = require("./actor");
 class Name extends Actor {
   reset() {
     this.v = 0;
-    this.x = 90;
+    this.x = (this.game.w - this.w) >> 1;
     this.y = 0;
   }
 

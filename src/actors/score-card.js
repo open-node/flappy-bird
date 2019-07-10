@@ -2,8 +2,6 @@ const Actor = require("./actor");
 
 class ScoreCard extends Actor {
   reset() {
-    this.w = 226;
-    this.h = 118;
     this.x = (this.game.w - this.w) >> 1;
     this.y = this.game.h + this.h;
     this.minY = 260; // 纵向最大值
@@ -11,22 +9,6 @@ class ScoreCard extends Actor {
     this.g = 0.32; // 重力加速度
     this.isNew = false; // 是否是新纪录
     this.ranking = "none";
-  }
-
-  constructor(game) {
-    super(game);
-
-    const { img } = game;
-    const birds = [
-      [
-        [img, 175, 975, this.w, this.h, this.x, -16, this.w, this.h],
-        [img, 230, 650, this.w, this.h, this.x, -16, this.w, this.h],
-        [img, 230, 702, this.w, this.h, this.x, -16, this.w, this.h]
-      ]
-    ];
-    // 三只小鸟，随机选择一个
-    const n = ((Math.random() * 7919) | 0) % birds.length;
-    this.bird = birds[n];
   }
 
   update() {

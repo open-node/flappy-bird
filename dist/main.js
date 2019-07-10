@@ -11,7 +11,7 @@ const game = new Game(document.getElementById("mycanvas"));
  */
 class Actor {
   /** Create a actor instance */
-  constructor(game) {
+  constructor(game, size) {
     this.game = game;
     /* 角色 x 坐标值 */
     this.x = 0;
@@ -25,6 +25,12 @@ class Actor {
     /* 角色 高度 */
     this.h = 0;
 
+    // 根据资源map，直接设置角色的宽高
+    if (size) {
+      this.w = size.w;
+      this.h = size.h;
+    }
+
     this.reset();
   }
 
@@ -33,12 +39,7 @@ class Actor {
    *
    * @return {void}
    */
-  reset() {
-    this.x = 0;
-    this.y = 0;
-    this.w = this.game.w;
-    this.h = this.game.h;
-  }
+  reset() {}
 
   /**
    * 更新参数值
@@ -112,8 +113,6 @@ class Background extends Actor {
   reset() {
     this.x = 0;
     this.stop = true;
-    this.w = 285;
-    this.h = 510;
     this.lackH = 130;
   }
 
@@ -145,10 +144,8 @@ const n = ((Math.random() * 7919) | 0) % 3;
 
 class Bird extends Actor {
   reset() {
-    this.x = 164;
-    this.y = 300;
-    this.w = 32;
-    this.h = 32;
+    this.x = (this.game.w - this.w) >> 1;
+    this.y = 260;
     this.wing = 0;
     this.isDead = false; // 是否已死亡，先死往后后坠毁完毕
     this.falled = false; // 是否已坠毁
@@ -236,7 +233,6 @@ class GameOver extends Actor {
   reset() {
     this.y = -48;
     this.maxY = 160; // 纵向最大值
-    this.w = 192;
     this.x = (this.game.w - this.w) >> 1;
     this.v = 0; // 局部帧编号
     this.g = 0.32; // 重力加速度
@@ -260,8 +256,6 @@ const Actor = require("./actor");
 
 class Land extends Actor {
   reset() {
-    this.w = 335;
-    this.h = 110;
     this.x = 0;
     this.y = this.game.h - this.h;
     this.stop = true;
@@ -289,7 +283,7 @@ const Actor = require("./actor");
 class Name extends Actor {
   reset() {
     this.v = 0;
-    this.x = 90;
+    this.x = (this.game.w - this.w) >> 1;
     this.y = 0;
   }
 
@@ -320,13 +314,10 @@ class Numbers extends Actor {
     this.alignValue = 0;
   }
 
-  constructor(game, type, getVal) {
-    super(game);
+  constructor(game, size, type, getVal) {
+    super(game, size);
     this.type = type;
     this.getVal = getVal;
-
-    this.w = this.type === "b" ? 26 : 16;
-    this.h = this.type === "b" ? 36 : 24;
   }
 
   updateX() {
@@ -410,10 +401,8 @@ const Actor = require("./actor");
 
 class PlayBtn extends Actor {
   reset() {
-    this.w = 112; // 图形高度
-    this.h = 62; // 图形宽度
-    this.x = 124; // 图形在画布中的x位置偏移量
-    this.y = 640; // 图形在画布中的y位置偏移量
+    this.x = (this.game.w - this.w) >> 1; // 图形在画布中的x位置偏移量
+    this.y = this.game.h; // 图形在画布中的y位置偏移量
     this.v = 0; // 按钮纵向速度，有方向，大于0朝下，小于0朝上
     this.minY = 360;
   }
@@ -442,10 +431,8 @@ const Actor = require("./actor");
 
 class RankingBtn extends Actor {
   reset() {
-    this.w = 104; // 图形高度
-    this.h = 62; // 图形宽度
-    this.x = ((this.game.w + 226) >> 1) - this.w; // 图形在画布中的x位置偏移量
-    this.y = 640; // 图形在画布中的y位置偏移量
+    this.x = ((this.game.w + this.game.actors.scoreCard.w) >> 1) - this.w; // 图形在画布中的x位置偏移量
+    this.y = this.game.h; // 图形在画布中的y位置偏移量
     this.v = 0; // 按钮纵向速度，有方向，大于0朝下，小于0朝上
     this.minY = 360;
   }
@@ -474,8 +461,6 @@ const Actor = require("./actor");
 
 class ScoreCard extends Actor {
   reset() {
-    this.w = 226;
-    this.h = 118;
     this.x = (this.game.w - this.w) >> 1;
     this.y = this.game.h + this.h;
     this.minY = 260; // 纵向最大值
@@ -483,22 +468,6 @@ class ScoreCard extends Actor {
     this.g = 0.32; // 重力加速度
     this.isNew = false; // 是否是新纪录
     this.ranking = "none";
-  }
-
-  constructor(game) {
-    super(game);
-
-    const { img } = game;
-    const birds = [
-      [
-        [img, 175, 975, this.w, this.h, this.x, -16, this.w, this.h],
-        [img, 230, 650, this.w, this.h, this.x, -16, this.w, this.h],
-        [img, 230, 702, this.w, this.h, this.x, -16, this.w, this.h]
-      ]
-    ];
-    // 三只小鸟，随机选择一个
-    const n = ((Math.random() * 7919) | 0) % birds.length;
-    this.bird = birds[n];
   }
 
   update() {
@@ -575,6 +544,7 @@ class Game {
       best: 0,
       record: []
     };
+    this.callbacks = new Map();
     this.init();
   }
 
@@ -596,29 +566,44 @@ class Game {
   // 场景特有的角色一般在场景内创建
   createActors() {
     // 游戏背景
-    this.actors.bg = new Background(this);
+    this.actors.bg = new Background(this, this.imgMaps.bg_0);
     // 开始页面游戏名称
-    this.actors.name = new Name(this);
-    // 开始按钮
-    this.actors.playBtn = new PlayBtn(this);
-    // 查看排行按钮
-    this.actors.rankBtn = new RankBtn(this);
+    this.actors.name = new Name(this, this.imgMaps.name);
     // 小鸟
-    this.actors.bird = new Bird(this);
+    this.actors.bird = new Bird(this, this.imgMaps.bird_0_0);
     // 大地
-    this.actors.land = new Land(this);
+    this.actors.land = new Land(this, this.imgMaps.land);
     // 管道角色集合
     this.actors.pipes = [];
     // game over 提示
-    this.actors.gameOver = new GameOver(this);
+    this.actors.gameOver = new GameOver(this, this.imgMaps.game_over);
     // 记分牌
-    this.actors.scoreCard = new ScoreCard(this);
+    this.actors.scoreCard = new ScoreCard(this, this.imgMaps.score_card);
+    // 开始按钮
+    this.actors.playBtn = new PlayBtn(this, this.imgMaps.play_btn);
+    // 查看排行按钮
+    this.actors.rankBtn = new RankBtn(this, this.imgMaps.rank_btn);
     // 实时得分
-    this.actors.liveScore = new Numbers(this, "b", () => this.scores.curr); // 大号数字显示
+    this.actors.liveScore = new Numbers(
+      this,
+      this.imgMaps.number_b_0,
+      "b",
+      () => this.scores.curr
+    ); // 大号数字显示
     // 本次得分
-    this.actors.currScore = new Numbers(this, "m", () => this.scores.curr); // 普通数字显示
+    this.actors.currScore = new Numbers(
+      this,
+      this.imgMaps.number_m_0,
+      "m",
+      () => this.scores.curr
+    ); // 普通数字显示
     // 最高分
-    this.actors.bestScore = new Numbers(this, "m", () => this.scores.best); // 普通数字显示
+    this.actors.bestScore = new Numbers(
+      this,
+      this.imgMaps.number_m_0,
+      "m",
+      () => this.scores.best
+    ); // 普通数字显示
     // 白色透明遮罩，模拟闪光效果
     this.actors.flash = new Flash(this);
   }
@@ -661,18 +646,26 @@ class Game {
     this.listenEvent();
 
     // 游戏主循环启动
-    this.timer = setInterval(() => {
-      this.fno += 1;
-      // 擦除
-      this.ctx.clearRect(0, 0, this.w, this.h);
-      // 场景更新
-      this.scene.update();
-      // 场景渲染
-      this.scene.render();
+    this.timer = setInterval(this.draw.bind(this), 20);
+  }
 
-      // 输出调试信息
-      this.debugg();
-    }, 20);
+  draw() {
+    this.fno += 1;
+    // 擦除
+    this.ctx.clearRect(0, 0, this.w, this.h);
+    // 场景更新
+    this.scene.update();
+    // 场景渲染
+    this.scene.render();
+    // 事件函数执行
+    const handlers = this.callbacks.get(this.fno);
+    if (handlers) {
+      for (const handler of handlers) handler();
+      this.callbacks.delete(this.fno);
+    }
+
+    // 输出调试信息
+    if (this.env === "development") this.debugg();
   }
 
   debugg() {
@@ -744,6 +737,15 @@ class Game {
     this.imgMaps = maps;
   }
 
+  // 绘制图片水平居中
+  drawImageAlignCenterByName(name, y) {
+    const args = this.drawImgs[name];
+    if (!args) throw Error("图片不存在");
+    args[5] = (this.w - args[3]) >> 1;
+    args[6] = y;
+    this.ctx.drawImage(...args);
+  }
+
   // 绘制图片
   drawImageByName(name, x, y) {
     const args = this.drawImgs[name];
@@ -751,6 +753,14 @@ class Game {
     args[5] = x;
     args[6] = y;
     this.ctx.drawImage(...args);
+  }
+
+  // 注册帧回调函数
+  registCallback(frames, handler) {
+    const fno = this.fno + frames;
+    const handlers = this.callbacks.get(fno) || [];
+    if (!handler.length) this.callbacks.set(fno, handlers);
+    handlers.push(handler);
   }
 }
 
@@ -967,15 +977,17 @@ const Scene = require("./scene");
 class Tour extends Scene {
   render() {
     super.render();
-    this.game.drawImageByName("ready", 83, 180);
-    this.game.drawImageByName("tour", 120, 230);
+    this.game.drawImageAlignCenterByName("ready", 180);
+    this.game.drawImageAlignCenterByName("tour", 230);
   }
 
   enter() {
     this.actors = ["bg", "land", "bird", "liveScore"];
+    this.game.actors.bird.reset();
+    this.game.actors.bird.stop = true;
     this.game.actors.bird.x = 80;
     this.game.scores.curr = 0;
-    setTimeout(() => this.game.enter("play"), 3000);
+    this.game.registCallback(120, () => this.game.enter("play"));
   }
 }
 

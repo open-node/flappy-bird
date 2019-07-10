@@ -6,8 +6,6 @@ class Background extends Actor {
   reset() {
     this.x = 0;
     this.stop = true;
-    this.w = 285;
-    this.h = 510;
     this.lackH = 130;
   }
 
