@@ -2,9 +2,9 @@ const Actor = require("./actor");
 
 class ScoreCard extends Actor {
   reset() {
-    this.x = 64;
-    this.w = 232;
+    this.w = 226;
     this.h = 118;
+    this.x = (this.game.w - this.w) >> 1;
     this.y = this.game.h + this.h;
     this.minY = 260; // 纵向最大值
     this.v = 0; // 局部帧编号
@@ -41,8 +41,8 @@ class ScoreCard extends Actor {
     this.game.drawImageByName("score_card", this.x, this.y);
     this.game.drawImageByName(
       `medal_${this.ranking}`,
-      this.x + 32,
-      this.y + 45
+      this.x + 26,
+      this.y + 43
     );
   }
 }

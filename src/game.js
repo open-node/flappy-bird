@@ -39,8 +39,6 @@ const loadImgMap = src =>
 class Game {
   constructor(canvas) {
     this.canvas = canvas;
-    this.w = canvas.width;
-    this.h = canvas.height;
     this.ctx = this.canvas.getContext("2d");
     this.img = null; // 资源图片，因为合成在了一起，所以只有一个图片资源需要加载
     this.scene = null; // 当前场景，初始为 start 场景
@@ -58,6 +56,13 @@ class Game {
 
   // 初始化, 资源加载之类的
   async init() {
+    // 约束画布的宽高为屏幕的宽高
+    const { clientWidth, clientHeight } = document.documentElement;
+    this.w = Math.max(320, Math.min(414, clientWidth));
+    this.h = Math.max(500, Math.min(650, clientHeight));
+    this.canvas.width = this.w;
+    this.canvas.height = this.h;
+
     await this.loadResources();
     this.start();
   }

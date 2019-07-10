@@ -260,11 +260,11 @@ const Actor = require("./actor");
 
 class Land extends Actor {
   reset() {
-    this.x = 0;
-    this.y = 528;
-    this.stop = true;
     this.w = 335;
     this.h = 110;
+    this.x = 0;
+    this.y = this.game.h - this.h;
+    this.stop = true;
   }
 
   update() {
@@ -442,9 +442,9 @@ const Actor = require("./actor");
 
 class RankingBtn extends Actor {
   reset() {
-    this.w = 112; // 图形高度
+    this.w = 104; // 图形高度
     this.h = 62; // 图形宽度
-    this.x = 192; // 图形在画布中的x位置偏移量
+    this.x = ((this.game.w + 226) >> 1) - this.w; // 图形在画布中的x位置偏移量
     this.y = 640; // 图形在画布中的y位置偏移量
     this.v = 0; // 按钮纵向速度，有方向，大于0朝下，小于0朝上
     this.minY = 360;
@@ -474,9 +474,9 @@ const Actor = require("./actor");
 
 class ScoreCard extends Actor {
   reset() {
-    this.x = 64;
-    this.w = 232;
+    this.w = 226;
     this.h = 118;
+    this.x = (this.game.w - this.w) >> 1;
     this.y = this.game.h + this.h;
     this.minY = 260; // 纵向最大值
     this.v = 0; // 局部帧编号
@@ -513,8 +513,8 @@ class ScoreCard extends Actor {
     this.game.drawImageByName("score_card", this.x, this.y);
     this.game.drawImageByName(
       `medal_${this.ranking}`,
-      this.x + 32,
-      this.y + 45
+      this.x + 26,
+      this.y + 43
     );
   }
 }
@@ -563,8 +563,6 @@ const loadImgMap = src =>
 class Game {
   constructor(canvas) {
     this.canvas = canvas;
-    this.w = canvas.width;
-    this.h = canvas.height;
     this.ctx = this.canvas.getContext("2d");
     this.img = null; // 资源图片，因为合成在了一起，所以只有一个图片资源需要加载
     this.scene = null; // 当前场景，初始为 start 场景
@@ -582,6 +580,13 @@ class Game {
 
   // 初始化, 资源加载之类的
   async init() {
+    // 约束画布的宽高为屏幕的宽高
+    const { clientWidth, clientHeight } = document.documentElement;
+    this.w = Math.max(320, Math.min(414, clientWidth));
+    this.h = Math.max(500, Math.min(650, clientHeight));
+    this.canvas.width = this.w;
+    this.canvas.height = this.h;
+
     await this.loadResources();
     this.start();
   }
@@ -877,6 +882,8 @@ const Scene = require("./scene");
 
 class Score extends Scene {
   enter() {
+    const { game } = this;
+    const { actors, scores } = game;
     this.actors = [
       "bg",
       "land",
@@ -890,15 +897,15 @@ class Score extends Scene {
 
     this.alpha = 0;
 
-    this.game.actors.bg.stop = true;
-    this.game.actors.land.stop = true;
-    this.game.actors.bird.stop = true;
-    this.game.actors.bird.v = 0;
+    actors.bg.stop = true;
+    actors.land.stop = true;
+    actors.bird.stop = true;
+    actors.bird.v = 0;
     for (const x of this.game.actors.pipes) x.stop = true;
 
     // 计算名次
-    const { curr: score, record, best } = this.game.scores;
-    const { scoreCard, playBtn, rankBtn } = this.game.actors;
+    const { curr: score, record, best } = scores;
+    const { scoreCard, playBtn, rankBtn } = actors;
     scoreCard.reset();
     if (best < score) {
       this.game.scores.best = score;
@@ -917,13 +924,13 @@ class Score extends Scene {
     this.game.scores.record.sort((a, b) => b[0] - a[0]);
 
     // 积分显示
-    this.game.actors.currScore.align = "right";
-    this.game.actors.currScore.alignValue = 86;
-    this.game.actors.currScore.y = scoreCard.y + 34;
+    actors.currScore.align = "right";
+    actors.currScore.alignValue = ((game.w - scoreCard.w) >> 1) + 22;
+    actors.currScore.y = scoreCard.y + 34;
 
-    this.game.actors.bestScore.align = "right";
-    this.game.actors.bestScore.alignValue = 86;
-    this.game.actors.bestScore.y = scoreCard.y + 74;
+    actors.bestScore.align = "right";
+    actors.bestScore.alignValue = ((game.w - scoreCard.w) >> 1) + 22;
+    actors.bestScore.y = scoreCard.y + 74;
 
     // 重新开始按钮
     playBtn.reset();

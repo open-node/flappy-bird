@@ -2,11 +2,11 @@ const Actor = require("./actor");
 
 class Land extends Actor {
   reset() {
-    this.x = 0;
-    this.y = 528;
-    this.stop = true;
     this.w = 335;
     this.h = 110;
+    this.x = 0;
+    this.y = this.game.h - this.h;
+    this.stop = true;
   }
 
   update() {

@@ -2,6 +2,8 @@ const Scene = require("./scene");
 
 class Score extends Scene {
   enter() {
+    const { game } = this;
+    const { actors, scores } = game;
     this.actors = [
       "bg",
       "land",
@@ -15,15 +17,15 @@ class Score extends Scene {
 
     this.alpha = 0;
 
-    this.game.actors.bg.stop = true;
-    this.game.actors.land.stop = true;
-    this.game.actors.bird.stop = true;
-    this.game.actors.bird.v = 0;
+    actors.bg.stop = true;
+    actors.land.stop = true;
+    actors.bird.stop = true;
+    actors.bird.v = 0;
     for (const x of this.game.actors.pipes) x.stop = true;
 
     // 计算名次
-    const { curr: score, record, best } = this.game.scores;
-    const { scoreCard, playBtn, rankBtn } = this.game.actors;
+    const { curr: score, record, best } = scores;
+    const { scoreCard, playBtn, rankBtn } = actors;
     scoreCard.reset();
     if (best < score) {
       this.game.scores.best = score;
@@ -42,13 +44,13 @@ class Score extends Scene {
     this.game.scores.record.sort((a, b) => b[0] - a[0]);
 
     // 积分显示
-    this.game.actors.currScore.align = "right";
-    this.game.actors.currScore.alignValue = 86;
-    this.game.actors.currScore.y = scoreCard.y + 34;
+    actors.currScore.align = "right";
+    actors.currScore.alignValue = ((game.w - scoreCard.w) >> 1) + 22;
+    actors.currScore.y = scoreCard.y + 34;
 
-    this.game.actors.bestScore.align = "right";
-    this.game.actors.bestScore.alignValue = 86;
-    this.game.actors.bestScore.y = scoreCard.y + 74;
+    actors.bestScore.align = "right";
+    actors.bestScore.alignValue = ((game.w - scoreCard.w) >> 1) + 22;
+    actors.bestScore.y = scoreCard.y + 74;
 
     // 重新开始按钮
     playBtn.reset();
