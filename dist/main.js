@@ -353,8 +353,8 @@ const Actor = require("./actor");
 
 class Pipe extends Actor {
   reset() {
-    this.gap = 240; // 上下管道之间的缝隙
-    this.uH = 40 + ((Math.random() * 300) | 0); // 上管道高度, 高度在40 ~ 340 之间随机
+    this.gap = 270; // 上下管道之间的缝隙
+    this.uH = 40 + ((Math.random() * 280) | 0); // 上管道高度, 高度在60 ~ 340 之间随机
     this.dH = this.game.h - this.game.actors.land.h - this.gap - this.uH; // 下管道高度
     this.x = this.game.w;
     this.stop = false;
@@ -556,7 +556,7 @@ class Game {
     // 约束画布的宽高为屏幕的宽高
     const { clientWidth, clientHeight } = document.documentElement;
     this.w = Math.max(320, Math.min(414, clientWidth));
-    this.h = Math.max(500, Math.min(700, clientHeight));
+    this.h = Math.max(500, Math.min(736, clientHeight));
     this.canvas.width = this.w;
     this.canvas.height = this.h;
 

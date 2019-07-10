@@ -61,7 +61,7 @@ class Game {
     // 约束画布的宽高为屏幕的宽高
     const { clientWidth, clientHeight } = document.documentElement;
     this.w = Math.max(320, Math.min(414, clientWidth));
-    this.h = Math.max(500, Math.min(700, clientHeight));
+    this.h = Math.max(500, Math.min(736, clientHeight));
     this.canvas.width = this.w;
     this.canvas.height = this.h;
 
