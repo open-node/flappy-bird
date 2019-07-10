@@ -5,7 +5,8 @@ class Play extends Scene {
   update() {
     super.update();
     const { actors, fno } = this.game;
-    if (fno % 150 === 0) actors.pipes.push(new Pipe(this.game));
+    if (fno % 150 === 0)
+      actors.pipes.push(new Pipe(this.game, this.game.imgMaps.pipe_up));
   }
 
   enter() {

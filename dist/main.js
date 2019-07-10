@@ -353,13 +353,11 @@ const Actor = require("./actor");
 
 class Pipe extends Actor {
   reset() {
-    this.gap = 200;
-    this.uH = (10 + Math.random() * 300) | 0; // 上管道高度, 高度在20 ~ 100 之间随机
-    this.dH = this.game.h - 112 - this.gap - this.uH; // 下管道高度
+    this.gap = 240; // 上下管道之间的缝隙
+    this.uH = 40 + ((Math.random() * 300) | 0); // 上管道高度, 高度在40 ~ 340 之间随机
+    this.dH = this.game.h - this.game.actors.land.h - this.gap - this.uH; // 下管道高度
     this.x = this.game.w;
     this.stop = false;
-    this.w = 52;
-    this.h = 326;
     this.passed = false;
   }
 
@@ -558,7 +556,7 @@ class Game {
     // 约束画布的宽高为屏幕的宽高
     const { clientWidth, clientHeight } = document.documentElement;
     this.w = Math.max(320, Math.min(414, clientWidth));
-    this.h = Math.max(500, Math.min(650, clientHeight));
+    this.h = Math.max(500, Math.min(700, clientHeight));
     this.canvas.width = this.w;
     this.canvas.height = this.h;
 
@@ -800,7 +798,8 @@ class Play extends Scene {
   update() {
     super.update();
     const { actors, fno } = this.game;
-    if (fno % 150 === 0) actors.pipes.push(new Pipe(this.game));
+    if (fno % 150 === 0)
+      actors.pipes.push(new Pipe(this.game, this.game.imgMaps.pipe_up));
   }
 
   enter() {
