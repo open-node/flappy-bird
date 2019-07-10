@@ -39,6 +39,7 @@ const loadImgMap = src =>
 class Game {
   constructor(canvas) {
     this.env = "development";
+    this.isPause = false; // 游戏是否暂停
     this.canvas = canvas;
     this.ctx = this.canvas.getContext("2d");
     this.img = null; // 资源图片，因为合成在了一起，所以只有一个图片资源需要加载
@@ -130,13 +131,18 @@ class Game {
     this.scenes.score = new Score(this, "score");
   }
 
+  // 点击、轻触事件
+  clickHandler(event) {
+    const { changedTouches, clientX, clientY } = event;
+    const x = (changedTouches && changedTouches[0].clientX) || clientX;
+    const y = (changedTouches && changedTouches[0].clientY) || clientY;
+    this.scene.click(x, y);
+  }
+
   // 开始事件监听
   listenEvent() {
-    this.canvas.onclick = event => {
-      const x = event.clientX;
-      const y = event.clientY;
-      this.scene.click(x, y);
-    };
+    const eventName = "ontouchstart" in document ? "ontouchstart" : "onclick";
+    this.canvas[eventName] = this.clickHandler.bind(this);
   }
 
   // 开始游戏，游戏资源全部加载完毕后
@@ -155,10 +161,12 @@ class Game {
     this.draw = this.draw.bind(this);
 
     // 游戏主循环启动
-    this.timer = requestAnimationFrame(this.draw);
+    requestAnimationFrame(this.draw);
   }
 
   draw() {
+    requestAnimationFrame(this.draw);
+    if (this.isPause) return;
     this.fno += 1;
     // 擦除
     this.ctx.clearRect(0, 0, this.w, this.h);
@@ -175,7 +183,6 @@ class Game {
 
     // 输出调试信息
     if (this.env === "development") this.debugg();
-    requestAnimationFrame(this.draw);
   }
 
   debugg() {
